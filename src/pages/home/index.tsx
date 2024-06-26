@@ -1,14 +1,15 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
-import { ContentBox } from './style'
+import { BannerBox, ListBox } from './style'
 
 export default function Home() {
   return (
-    <ContentBox>
-      <div className="box-left">
-        <div className="banner border mt-20"></div>
-      </div>
-      <div className="box-right"></div>
-    </ContentBox>
+    <Fragment>
+      <BannerBox className="border"></BannerBox>
+      <ListBox className='mt-20'>
+        <div className="list-left border"></div>
+        <div className="list-right border"></div>
+      </ListBox>
+    </Fragment>
   )
 }

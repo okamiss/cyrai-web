@@ -1,17 +1,20 @@
 import styled from 'styled-components'
 
-export const ContentBox = styled.div`
-  width: var(--container-width);
-  margin: 0 auto;
+export const BannerBox = styled.div`
+  width: 100%;
+  height: 600px;
+`
+
+
+export const ListBox = styled.div`
+  width: 100%;
+  height: 600px;
   display: flex;
-  .box-left {
-    width: 800px;
-    .banner{
-      width: 100%;
-      height: 400px;
-    }
+  height: 400px;
+  .list-left{
+    width: 400px;
   }
-  .box-right{
+  .list-right{
     flex: 1;
   }
 `
