@@ -1,7 +1,14 @@
 import React from 'react'
 
-export default function About() {
+import { ContentBox } from './style'
+
+export default function Home() {
   return (
-    <div>About</div>
+    <ContentBox>
+      <div className="box-left">
+        <div className="banner border mt-20"></div>
+      </div>
+      <div className="box-right"></div>
+    </ContentBox>
   )
 }

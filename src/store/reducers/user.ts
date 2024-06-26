@@ -4,7 +4,8 @@ import { message } from 'antd'
 import { userList } from '@/common/user-data'
 
 // 创建异步操作的 thunk 函数
-export const Login = createAsyncThunk('login', async (loginInfo: LoginType) => {
+
+export const Login:any = createAsyncThunk('login', async (loginInfo: LoginType) => {
   const res = await new Promise<userInfoType>((resolve) => {
     const getInfo = userList.find((item) => item.username === loginInfo.username)
 
