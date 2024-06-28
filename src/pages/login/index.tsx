@@ -8,12 +8,11 @@ import { useNavigate } from 'react-router-dom'
 import initLoginBg from './initbg'
 import { Box } from './style'
 import { Button, Checkbox, Form, Input } from 'antd'
-import { Login } from '@/store/reducers/user'
+// import { Login } from '@/store/reducers/user'
 import { useDispatch } from 'react-redux'
 
 export default function index() {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+
 
   const particlesInit = useCallback(async (engine: Engine) => {
     await loadSlim(engine)
@@ -24,13 +23,7 @@ export default function index() {
     await console.log(container, 'container')
   }, [])
 
-  const onFinish = (values: LoginType) => {
-    dispatch(Login(values) as any)
-  }
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo)
-  }
 
   return (
     <div style={{ width: '100%', height: '100vh', overflow: 'hidden' }}>
@@ -41,49 +34,7 @@ export default function index() {
         options={initLoginBg as any}
       />
 
-      <Box>
-        {/* <Button type="primary" onClick={login}>
-          登录
-        </Button> */}
-        <Form
-          layout="vertical"
-          name="loginForm"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
-          <Form.Item<LoginType>
-            label={<label style={{ color: '#fff' }}>Username</label>}
-            name="username"
-            rules={[{ required: true, message: 'Please input your username!' }]}
-          >
-            <Input placeholder="请输入" />
-          </Form.Item>
-
-          <Form.Item<LoginType>
-            label={<label style={{ color: '#fff' }}>Password</label>}
-            name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
-          >
-            <Input.Password placeholder="请输入" />
-          </Form.Item>
-
-          <Form.Item<LoginType>
-            name="remember"
-            valuePropName="checked"
-            wrapperCol={{ offset: 8, span: 16 }}
-          >
-            <Checkbox style={{ color: '#fff' }}>Remember me</Checkbox>
-          </Form.Item>
-
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button style={{ backgroundColor: '#35d4c7' }} type="primary" htmlType="submit">
-              登录
-            </Button>
-          </Form.Item>
-        </Form>
-      </Box>
+      
     </div>
   )
 }

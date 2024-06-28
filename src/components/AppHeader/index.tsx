@@ -8,7 +8,9 @@ import { NavLink } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 // import styles  from './index.module.scss'
 import { HeaderWrapper } from './style'
-import { userLogin } from '@/apis/login'
+import { userRegister } from '@/apis/user'
+
+import { loginUserThunk } from '@/store/reducers/user'
 
 // import { logout } from '@/store/reducers/user'
 
@@ -32,27 +34,37 @@ const AppHeader: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
+  const [form] = Form.useForm()
+
+  // 打开登录框
   const showModal = () => {
     setIsModalOpen(true)
   }
 
+  // 关闭登录框
   const handleCancel = () => {
     setIsModalOpen(false)
   }
 
+  // 登录
   const onFinish: FormProps<AccountType>['onFinish'] = (values) => {
     console.log('Success:', values)
-
-    userLogin(values).then((res) => {
-      messageApi.open({
-        type: 'success',
-        content: 'This is a success message'
-      })
-    })
+    dispatch(loginUserThunk(values))
   }
 
-  const onFinishFailed: FormProps<AccountType>['onFinishFailed'] = (errorInfo) => {
-    console.log('Failed:', errorInfo)
+  // 注册
+  const register = () => {
+    form.validateFields().then(() => {
+      const values = form.getFieldsValue()
+      userRegister(values).then((res) => {
+        messageApi.open({
+          type: 'success',
+          content: res.message
+        })
+        // setIsModalOpen(false)
+        // form.resetFields()
+      })
+    })
   }
 
   return (
@@ -77,12 +89,12 @@ const AppHeader: React.FC = () => {
       </HeaderWrapper>
       <Modal title="登录账号" open={isModalOpen} footer={null} onCancel={handleCancel}>
         <Form
+          form={form}
           name="basic"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Form.Item<AccountType>
@@ -148,7 +160,7 @@ const AppHeader: React.FC = () => {
                   }
                 }}
               >
-                <Button type="primary" htmlType="button">
+                <Button type="primary" htmlType="button" onClick={register}>
                   注册
                 </Button>
               </ConfigProvider>
