@@ -1,20 +1,14 @@
 import React, { Fragment, useState } from 'react'
 import type { FormProps } from 'antd'
 import { TinyColor } from '@ctrl/tinycolor'
-
-import { Button, Checkbox, ConfigProvider, Form, Input, Modal, Space, message } from 'antd'
+import { Button, ConfigProvider, Form, Input, Modal, message } from 'antd'
 import { headerLinks } from '@/common/local-data'
 import { NavLink } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 // import styles  from './index.module.scss'
 import { HeaderWrapper } from './style'
-import { userLogin } from '@/apis/login'
-
-// import { logout } from '@/store/reducers/user'
-
-// const config = {
-//   title: '退出登陆!'
-// }
+import { userRegister, userLogin } from '@/apis/user'
+import { logout, saveLoginInfo } from '@/store/reducers/user'
 
 const colors1 = ['#6253E1', '#04BEFE']
 const colors2 = ['#40e495', '#30dd8a', '#2bb673']
@@ -24,40 +18,80 @@ const getHoverColors = (colors: string[]) =>
 const getActiveColors = (colors: string[]) =>
   colors.map((color) => new TinyColor(color).darken(5).toString())
 
+const config = {
+  title: '要退出当前账号吗？',
+  content: <></>
+}
+
 const AppHeader: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage()
+  const [modal, contextHolder2] = Modal.useModal()
 
   const dispatch = useDispatch()
-  // const [modal, contextHolder] = Modal.useModal()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [logRegtype, setLogRegtype] = useState(1)
+  const [form] = Form.useForm()
 
+  const token = useSelector((state: RootState) => state.user.token)
+
+  // 打开登录框
   const showModal = () => {
     setIsModalOpen(true)
   }
 
+  // 关闭登录框
   const handleCancel = () => {
     setIsModalOpen(false)
   }
 
+  // 登录
   const onFinish: FormProps<AccountType>['onFinish'] = (values) => {
     console.log('Success:', values)
+    setLoading(true)
+    userLogin(values)
+      .then((res) => {
+        setLoading(false)
+        messageApi.open({
+          type: 'success',
+          content: res.message
+        })
 
-    userLogin(values).then((res) => {
-      messageApi.open({
-        type: 'success',
-        content: 'This is a success message'
+        dispatch(saveLoginInfo(res.data))
+        setIsModalOpen(false)
+        form.resetFields()
       })
-    })
+      .catch(() => {
+        setLoading(false)
+      })
   }
 
-  const onFinishFailed: FormProps<AccountType>['onFinishFailed'] = (errorInfo) => {
-    console.log('Failed:', errorInfo)
+  // 注册
+  const register = () => {
+    form.validateFields().then(() => {
+      const values = form.getFieldsValue()
+      setLoading(true)
+      userRegister(values)
+        .then((res) => {
+          setLoading(false)
+          messageApi.open({
+            type: 'success',
+            content: res.message
+          })
+          // setIsModalOpen(false)
+          form.resetFields()
+          setLogRegtype(1)
+        })
+        .catch(() => {
+          setLoading(false)
+        })
+    })
   }
 
   return (
     <Fragment>
       {contextHolder}
+      {contextHolder2}
       <HeaderWrapper>
         <div className="content">
           <div className="select-list">
@@ -68,30 +102,55 @@ const AppHeader: React.FC = () => {
                 </div>
               )
             })}
-            <div className="select-item right">
-              <span onClick={showModal}>登录</span>
-            </div>
+            {!token ? (
+              <div className="select-item right">
+                <span onClick={showModal}>登录/注册</span>
+              </div>
+            ) : (
+              <div className="select-item right">
+                <span
+                  onClick={async () => {
+                    const confirmed = await modal.confirm(config)
+                    if (confirmed) {
+                      dispatch(logout())
+                    }
+                  }}
+                >
+                  退出
+                </span>
+              </div>
+            )}
           </div>
         </div>
         {/* {contextHolder} */}
       </HeaderWrapper>
       <Modal title="登录账号" open={isModalOpen} footer={null} onCancel={handleCancel}>
         <Form
+          form={form}
           name="basic"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Form.Item<AccountType>
-            label="账号"
-            name="username"
-            rules={[{ required: true, message: '请输入账号！' }]}
+            label="邮箱"
+            name="email"
+            rules={[{ required: true, message: '请输入邮箱！' }]}
           >
             <Input />
           </Form.Item>
+
+          {logRegtype === 2 && (
+            <Form.Item<AccountType>
+              label="用户名"
+              name="username"
+              rules={[{ required: logRegtype === 2, message: '请输入账号！' }]}
+            >
+              <Input />
+            </Form.Item>
+          )}
 
           <Form.Item<AccountType>
             label="密码"
@@ -101,16 +160,8 @@ const AppHeader: React.FC = () => {
             <Input.Password />
           </Form.Item>
 
-          <Form.Item<AccountType>
-            label="邮箱"
-            name="email"
-            rules={[{ required: true, message: '请输入邮箱！' }]}
-          >
-            <Input />
-          </Form.Item>
-
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Space>
+            {logRegtype === 1 ? (
               <ConfigProvider
                 theme={{
                   components: {
@@ -127,11 +178,14 @@ const AppHeader: React.FC = () => {
                   }
                 }}
               >
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" htmlType="submit" loading={loading}>
                   登录
                 </Button>
+                <Button type="link" onClick={() => setLogRegtype(2)}>
+                  暂无账号？去注册！
+                </Button>
               </ConfigProvider>
-
+            ) : (
               <ConfigProvider
                 theme={{
                   components: {
@@ -148,11 +202,14 @@ const AppHeader: React.FC = () => {
                   }
                 }}
               >
-                <Button type="primary" htmlType="button">
+                <Button type="primary" htmlType="button" onClick={register} loading={loading}>
                   注册
                 </Button>
+                <Button type="link" onClick={() => setLogRegtype(1)}>
+                  已有账号？去登录！
+                </Button>
               </ConfigProvider>
-            </Space>
+            )}
           </Form.Item>
         </Form>
       </Modal>

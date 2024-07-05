@@ -1,4 +1,7 @@
+import {  message } from 'antd';
+
 import axios from 'axios'
+
 // import { useSelector, useDispatch } from 'react-redux'
 
 // const user = useSelector(state => state.user)
@@ -32,13 +35,17 @@ instance.interceptors.response.use(
     const data = res.data
     // const userStore = useUserStore()
     if (data?.code == 200) {
-      return data.result
+      return data
     } else {
-      // ElMessage.error(data.msg)
-      return Promise.reject(data.msg)
+      console.log('@@@@@@@@@@@@@');
+      console.log(data);
+      
+      message.error(data.message);
+      return Promise.reject(data)
     }
   },
   (err) => {
+    message.error(err.response.data.message);
     return Promise.reject(err)
   }
 )
