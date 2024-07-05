@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom'
 
 import Layout from '@/layout'
 import Home from '@/pages/home'
-import Login from '@/pages/login'
+import Screen from '@/pages/screen'
 
 const Social = lazy(() => import('@/pages/social'))
 
@@ -31,8 +31,8 @@ const routes = [
     ]
   },
   {
-    path: '/login',
-    element: <Login />
+    path: '/screen',
+    element: <Screen />
   },
   {
     path: '*',

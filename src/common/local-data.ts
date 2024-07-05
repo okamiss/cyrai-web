@@ -7,5 +7,9 @@ export const headerLinks = [
   {
     title: '社交',
     link: '/social'
+  },
+  {
+    title: '大屏幕',
+    link: '/screen'
   }
 ]
