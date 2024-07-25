@@ -1,35 +1,12 @@
 // uno.config.ts
-import {
-  defineConfig,
-  presetAttributify,
-  presetIcons,
-  presetTypography,
-  presetUno,
-  presetWebFonts,
-  transformerDirectives,
-  transformerVariantGroup
-} from 'unocss'
+import { defineConfig } from 'unocss'
 
 export default defineConfig({
-  rules: [[/^m-([\.\d]+)$/, ([_, num]) => ({ margin: `${num}px` })]],
-  shortcuts: [
-    // ...
-  ],
-  theme: {
-    colors: {
-      // ...
-    }
-  },
-  presets: [
-    presetUno(),
-    presetAttributify(),
-    presetIcons(),
-    presetTypography(),
-    presetWebFonts({
-      fonts: {
-        // ...
-      }
-    })
-  ],
-  transformers: [transformerDirectives(), transformerVariantGroup()]
+  rules: [
+    [/^m-([\.\d]+)$/, ([_, num]) => ({ margin: `${num}px` })],
+    [/^mt-([\.\d]+)$/, ([_, num]) => ({ 'margin-top': `${num}px` })],
+    [/^mb-([\.\d]+)$/, ([_, num]) => ({ 'margin-bottom': `${num}px` })],
+    [/^ml-([\.\d]+)$/, ([_, num]) => ({ 'margin-left': `${num}px` })],
+    [/^mr-([\.\d]+)$/, ([_, num]) => ({ 'margin-right': `${num}px` })]
+  ]
 })

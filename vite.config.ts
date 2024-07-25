@@ -9,9 +9,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [
       react(),
-      UnoCSS({
-        configFile: './uno.config.ts'
-      })
+      UnoCSS()
     ],
     resolve: {
       alias: {

@@ -79,7 +79,7 @@ export default function detail() {
       <div className="title">{artInfo.title}</div>
       <div className="desc">作者：{artInfo.author.name}</div>
       <div className="content">{artInfo.content}</div>
-      <div className="like mt-10">
+      <div className="like ">
         <HeartOutlined onClick={likeArt} /> <i>{artInfo.likes.length}</i>
       </div>
       <div className="comment">
