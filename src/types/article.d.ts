@@ -1,9 +1,12 @@
-
 interface ArtListQuery {
-  page:number
-  limit:number
+  page: number
+  limit: number
 }
 
+interface commentArt {
+  artId: string
+  comment: string
+}
 interface sendArticle {
   title: string
   content: string
@@ -33,9 +36,10 @@ interface getArticleBody {
   likes: any[]
   createdAt: string
   comments: any[]
-  __v: number
+  __v?: number
 }
 
 interface Author {
   _id: string
+  name: string
 }

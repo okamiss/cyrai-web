@@ -11,6 +11,11 @@ $border-info: 1px solid #ccc;
   border: $border-info;
 }
 
+.m-1200-auto {
+  width: var(--container-width);
+  margin: 0 auto;
+}
+
 // 上边距
 .mt-5 {
   margin-top: 5px;

@@ -9,6 +9,7 @@ import { getArticle, sendArticle } from '@/apis/article'
 const { TextArea } = Input
 
 import dayjs from 'dayjs'
+import { useNavigate } from 'react-router-dom'
 
 export default function Home() {
   const username = useSelector((state: RootState) => state.user.username)
@@ -17,6 +18,8 @@ export default function Home() {
   const [articleList, setArticleList] = useState<getArticleBody[]>([])
   const [total, setTotal] = useState(0)
   const [listQuery, setListQuery] = useState({ page: 1, limit: 10 })
+
+  const navigateTo = useNavigate()
 
   useEffect(() => {
     getDataList()
@@ -63,7 +66,7 @@ export default function Home() {
   }
 
   return (
-    <ContentBox>
+    <ContentBox className='m-1200-auto'>
       {contextHolder}
       <div className="box-left">
         <div className="box-left-banner border mt-20"></div>
@@ -71,8 +74,10 @@ export default function Home() {
           {articleList.map((item) => {
             return (
               <div className="article-item" key={item._id}>
-                <div className="article-item-userinfo border"></div>
-                <div className="article-item-title border">{item.title}</div>
+                <div className="article-item-userinfo border">{item.author.name}</div>
+                <div className="article-item-title border">
+                  <span onClick={() => navigateTo(`/social/detail/${item._id}`)}>{item.title}</span>
+                </div>
                 <div className="article-item-content border">{item.content}</div>
                 <div className="article-item-interactive border">
                   <span>发布时间：{dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
