@@ -62,10 +62,9 @@ export default function detail() {
     })
   }
 
-
   // 点赞
-  const likeArt = ()=>{
-    likeArticle(artId).then(res=>{
+  const likeArt = () => {
+    likeArticle(artId).then((res) => {
       messageApi.open({
         type: 'success',
         content: res.message
