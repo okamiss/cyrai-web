@@ -1,16 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useSelector } from 'react-redux'
 import { ContentBox } from './style'
-import { Button, ConfigProvider, Form, Input, Modal, message } from 'antd'
+import { Button, ConfigProvider, Form, Input, Modal, Pagination, message } from 'antd'
 import { FormOutlined } from '@ant-design/icons'
 import type { FormProps } from 'antd'
+import { getArticle, sendArticle } from '@/apis/article'
 const { TextArea } = Input
+
+import dayjs from 'dayjs'
 
 export default function Home() {
   const username = useSelector((state: RootState) => state.user.username)
-
+  const [messageApi, contextHolder] = message.useMessage()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [articleList, setArticleList] = useState<getArticleBody[]>([])
+  const [total, setTotal] = useState(0)
+  const [listQuery, setListQuery] = useState({ page: 1, limit: 10 })
+
+  useEffect(() => {
+    getDataList()
+  }, [listQuery])
 
   const [form] = Form.useForm()
 
@@ -18,30 +28,67 @@ export default function Home() {
     setIsModalOpen(true)
   }
 
-  const handleOk = () => {
-    setIsModalOpen(false)
-  }
+  const handleOk = () => {}
 
   const handleCancel = () => {
     setIsModalOpen(false)
   }
 
-  // 登录
+  const onChange = (page: number, pageSize: number) => {
+    console.log(page, pageSize)
+    setListQuery({ page, limit: pageSize })
+  }
+
+  // 获取文章列表
+  const getDataList = () => {
+    getArticle(listQuery).then((res) => {
+      const { articles, total } = res.data
+      setTotal(total)
+      setArticleList(articles)
+    })
+  }
+
+  // 发布文章
   const onFinish: FormProps<sendArticle>['onFinish'] = (values) => {
     console.log(values)
+    sendArticle(values).then((res) => {
+      messageApi.open({
+        type: 'success',
+        content: res.message
+      })
+      getDataList()
+      handleCancel()
+      form.resetFields()
+    })
   }
 
   return (
     <ContentBox>
+      {contextHolder}
       <div className="box-left">
         <div className="box-left-banner border mt-20"></div>
         <div className="box-left-article border mt-20">
-          <div className="article-item">
-            <div className="article-item-userinfo border"></div>
-            <div className="article-item-title border">我是一个标题</div>
-            <div className="article-item-content border"></div>
-            <div className="article-item-interactive border"></div>
-          </div>
+          {articleList.map((item) => {
+            return (
+              <div className="article-item" key={item._id}>
+                <div className="article-item-userinfo border"></div>
+                <div className="article-item-title border">{item.title}</div>
+                <div className="article-item-content border">{item.content}</div>
+                <div className="article-item-interactive border">
+                  <span>发布时间：{dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
+                  <span>点赞：{item.likes.length}</span>
+                  <span>评论：{item.comments.length}</span>
+                </div>
+              </div>
+            )
+          })}
+          <Pagination
+            total={total}
+            showSizeChanger
+            showQuickJumper
+            showTotal={(total) => `Total ${total} items`}
+            onChange={onChange}
+          />
         </div>
       </div>
       <div className="box-right ml-20">
@@ -62,7 +109,7 @@ export default function Home() {
       >
         <Form
           form={form}
-          name="basic"
+          name="sendartform"
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 20 }}
           onFinish={onFinish}

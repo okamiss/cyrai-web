@@ -127,7 +127,7 @@ const AppHeader: React.FC = () => {
       <Modal title="登录账号" open={isModalOpen} footer={null} onCancel={handleCancel}>
         <Form
           form={form}
-          name="basic"
+          name="loginform"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}

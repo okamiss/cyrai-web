@@ -29,6 +29,8 @@ export const ContentBox = styled.div`
         }
         &-interactive{
           height: 20px;
+          display: flex;
+          justify-content: space-between;
         }
       }
     }
