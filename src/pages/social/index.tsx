@@ -12,7 +12,7 @@ import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
 
 export default function Home() {
-  const username = useSelector((state: RootState) => state.user.username)
+  const name = useSelector((state: RootState) => state.user.name)
   const [messageApi, contextHolder] = message.useMessage()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [articleList, setArticleList] = useState<getArticleBody[]>([])
@@ -98,7 +98,7 @@ export default function Home() {
       </div>
       <div className="box-right ml-20">
         <div className="box-right-userinfo border mt-20">
-          <p>欢迎 {username}</p>
+          <p>欢迎 {name}</p>
           <Button type="primary" shape="round" icon={<FormOutlined />} onClick={showModal}>
             发布帖子
           </Button>

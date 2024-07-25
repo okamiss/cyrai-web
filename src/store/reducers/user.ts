@@ -9,21 +9,21 @@ export const loginUserThunk: any = createAsyncThunk('xxx', async (credentials: L
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    username: localStorage.getItem('username') || '',
+    name: localStorage.getItem('name') || '',
     token: localStorage.getItem('token') || '',
     email: localStorage.getItem('email') || ''
   },
   reducers: {
     saveLoginInfo(state, action) {
-      state.username = action.payload.username
+      state.name = action.payload.name
       state.token = action.payload.token
       state.email = action.payload.email
-      localStorage.setItem('username', action.payload.username)
+      localStorage.setItem('name', action.payload.name)
       localStorage.setItem('token', action.payload.token)
       localStorage.setItem('email', action.payload.email)
     },
     logout(state) {
-      state.username = ''
+      state.name = ''
       state.token = ''
       state.email = ''
       localStorage.clear()

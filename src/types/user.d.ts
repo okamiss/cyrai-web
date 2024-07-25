@@ -1,12 +1,12 @@
 interface userInfoType {
   id: number
-  username: string
+  name: string
   password: string
   token: string
 }
 
 interface LoginType {
-  username?: string
+  name?: string
   password?: string
   remember?: string
 }

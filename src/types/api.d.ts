@@ -6,7 +6,7 @@ interface DefaultResponseTemplate {
 
 // 用户注册
 interface RegisterApiData {
-  username: string
+  name: string
   password: string
   email: string
   _id?: string

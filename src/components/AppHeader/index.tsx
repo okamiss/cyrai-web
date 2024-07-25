@@ -145,7 +145,7 @@ const AppHeader: React.FC = () => {
           {logRegtype === 2 && (
             <Form.Item<AccountType>
               label="用户名"
-              name="username"
+              name="name"
               rules={[{ required: logRegtype === 2, message: '请输入账号！' }]}
             >
               <Input />
