@@ -25,6 +25,9 @@ const config = {
 }
 
 const AppHeader: React.FC = () => {
+  const token = useSelector((state: RootState) => state.user.token)
+  const name = useSelector((state: RootState) => state.user.name)
+
   const [messageApi, contextHolder] = message.useMessage()
   const [modal, contextHolder2] = Modal.useModal()
 
@@ -33,8 +36,6 @@ const AppHeader: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [logRegtype, setLogRegtype] = useState(1)
   const [form] = Form.useForm()
-
-  const token = useSelector((state: RootState) => state.user.token)
 
   const navigateTo = useNavigate()
 
@@ -142,7 +143,7 @@ const AppHeader: React.FC = () => {
                   退出
                 </span> */}
                 <Dropdown menu={{ items }} placement="bottom">
-                  <span>你好，XX</span>
+                  <span>你好，{name}</span>
                 </Dropdown>
               </div>
             )}

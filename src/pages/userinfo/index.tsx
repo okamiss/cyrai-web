@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { UserinfoBox } from './style'
-import { userEdit } from '@/apis/user'
+import { getUserInfo, userEdit } from '@/apis/user'
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 import { Button, Flex, message, Upload } from 'antd'
 import type { GetProp, UploadProps } from 'antd'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import ImgCrop from 'antd-img-crop'
 
-import { userContext } from '@/layout'
+// import { userContext } from '@/layout'
+import { saveLoginInfo } from '@/store/reducers/user'
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0]
 
@@ -31,13 +32,27 @@ const beforeUpload = (file: FileType) => {
 }
 
 export default function Userinfo() {
-  const getUserContext = useContext(userContext)
-
-  const [userinfo, setUserinfo] = useState<getUser>(getUserContext)
+  // const getUserContext = useContext(userContext)
+  const dispatch = useDispatch()
+  const [userinfo, setUserinfo] = useState<getUser>({
+    name: '',
+    email: '',
+    avatar: ''
+  })
   const [loading, setLoading] = useState(false)
-  const [imageUrl, setImageUrl] = useState<string>(
-    `${import.meta.env.VITE_SERVE}/${getUserContext.avatar}`
-  )
+  const [imageUrl, setImageUrl] = useState<string>()
+
+  useEffect(() => {
+    getInfoList()
+  }, [])
+
+  const getInfoList = () => {
+    getUserInfo().then((res) => {
+      setUserinfo(res.data)
+      setImageUrl(`${import.meta.env.VITE_SERVE}/${res.data.avatar}`)
+      dispatch(saveLoginInfo(res.data))
+    })
+  }
 
   const handleChange: UploadProps['onChange'] = (info) => {
     if (info.file.status === 'uploading') {
@@ -70,6 +85,7 @@ export default function Userinfo() {
     console.log(userinfo)
     userEdit(userinfo).then(() => {
       message.success('修改成功')
+      getInfoList()
     })
   }
 
