@@ -10,22 +10,35 @@ const { TextArea } = Input
 
 import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
+import Emoji from '@/components/Emoji'
 
 export default function Home() {
+  const navigateTo = useNavigate()
   const name = useSelector((state: RootState) => state.user.name)
   const [messageApi, contextHolder] = message.useMessage()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [articleList, setArticleList] = useState<getArticleBody[]>([])
   const [total, setTotal] = useState(0)
   const [listQuery, setListQuery] = useState({ page: 1, limit: 10 })
+  const [form] = Form.useForm()
 
-  const navigateTo = useNavigate()
+  const discussInit = {
+    title: '',
+    content: '',
+    fileList: ''
+  }
+  const [discuss, discussState] = useState(discussInit)
+  const saveQuery = (value: string, key: string) => {
+    console.log(value, key, '@@@@')
+
+    discussState({ ...discuss, [key]: value })
+
+    form.setFieldsValue({})
+  }
 
   useEffect(() => {
     getDataList()
   }, [listQuery])
-
-  const [form] = Form.useForm()
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -66,7 +79,7 @@ export default function Home() {
   }
 
   return (
-    <ContentBox className='m-1200-auto'>
+    <ContentBox className="m-1200-auto">
       {contextHolder}
       <div className="box-left">
         <div className="box-left-banner border-box mt-20"></div>
@@ -125,7 +138,7 @@ export default function Home() {
             name="title"
             rules={[{ required: true, message: '请输入标题！' }]}
           >
-            <Input />
+            <Input onChange={(e) => saveQuery(e.target.value, 'title')} />
           </Form.Item>
           <Form.Item<sendArticle>
             label="内容"
@@ -134,6 +147,10 @@ export default function Home() {
           >
             <TextArea autoSize={{ minRows: 5, maxRows: 10 }} />
           </Form.Item>
+          <Form.Item<sendArticle> label="内容">
+            <Emoji onEmoji={(e: string) => saveQuery(discuss.content + e, 'content')} />
+          </Form.Item>
+
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
               发布
