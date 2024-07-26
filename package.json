@@ -13,6 +13,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.5",
     "antd": "^5.19.0",
+    "antd-img-crop": "^4.22.0",
     "axios": "^1.7.2",
     "dayjs": "^1.11.12",
     "i": "^0.3.7",

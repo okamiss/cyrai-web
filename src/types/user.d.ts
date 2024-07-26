@@ -24,10 +24,12 @@ interface LoginAPIResponse extends DefaultResponseTemplate {
 }
 
 interface userInfoType {
-  id: number | string
+  id?: number | string
   name: string
   password: string
   token: string
+  avatar?: string
+  email?: string
 }
 
 interface LoginType {
@@ -41,3 +43,4 @@ interface getUser extends Omit<userInfoType, 'password' | 'token'> {}
 interface getUserRes extends DefaultResponseTemplate {
   data: getUser
 }
+
