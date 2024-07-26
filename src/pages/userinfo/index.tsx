@@ -35,11 +35,9 @@ export default function Userinfo() {
 
   const [userinfo, setUserinfo] = useState<getUser>(getUserContext)
   const [loading, setLoading] = useState(false)
-  const [imageUrl, setImageUrl] = useState<string>()
-
-  useEffect(() => {
-    setImageUrl(`${import.meta.env.VITE_SERVE}/${getUserContext.avatar}`)
-  }, [])
+  const [imageUrl, setImageUrl] = useState<string>(
+    `${import.meta.env.VITE_SERVE}/${getUserContext.avatar}`
+  )
 
   const handleChange: UploadProps['onChange'] = (info) => {
     if (info.file.status === 'uploading') {
