@@ -1,14 +1,15 @@
 import React, { Fragment, useState } from 'react'
-import type { FormProps } from 'antd'
 import { TinyColor } from '@ctrl/tinycolor'
-import { Button, ConfigProvider, Form, Input, Modal, message } from 'antd'
+import { Button, ConfigProvider, Dropdown, Form, Input, Modal, message } from 'antd'
 import { headerLinks } from '@/common/local-data'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 // import styles  from './index.module.scss'
 import { HeaderWrapper } from './style'
 import { userRegister, userLogin } from '@/apis/user'
 import { logout, saveLoginInfo } from '@/store/reducers/user'
+
+import type { FormProps, MenuProps } from 'antd'
 
 const colors1 = ['#6253E1', '#04BEFE']
 const colors2 = ['#40e495', '#30dd8a', '#2bb673']
@@ -34,6 +35,28 @@ const AppHeader: React.FC = () => {
   const [form] = Form.useForm()
 
   const token = useSelector((state: RootState) => state.user.token)
+
+  const navigateTo = useNavigate()
+
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: <>个人中心</>,
+      onClick: () => {
+        navigateTo('/userinfo')
+      }
+    },
+    {
+      key: '2',
+      label: <>退出登录</>,
+      onClick: async () => {
+        const confirmed = await modal.confirm(config)
+        if (confirmed) {
+          dispatch(logout())
+        }
+      }
+    }
+  ]
 
   // 打开登录框
   const showModal = () => {
@@ -108,7 +131,7 @@ const AppHeader: React.FC = () => {
               </div>
             ) : (
               <div className="select-item right">
-                <span
+                {/* <span
                   onClick={async () => {
                     const confirmed = await modal.confirm(config)
                     if (confirmed) {
@@ -117,7 +140,10 @@ const AppHeader: React.FC = () => {
                   }}
                 >
                   退出
-                </span>
+                </span> */}
+                <Dropdown menu={{ items }} placement="bottom">
+                  <span>你好，XX</span>
+                </Dropdown>
               </div>
             )}
           </div>

@@ -69,17 +69,17 @@ export default function Home() {
     <ContentBox className='m-1200-auto'>
       {contextHolder}
       <div className="box-left">
-        <div className="box-left-banner border mt-20"></div>
-        <div className="box-left-article border mt-20">
+        <div className="box-left-banner border-box mt-20"></div>
+        <div className="box-left-article border-box mt-20">
           {articleList.map((item) => {
             return (
               <div className="article-item" key={item._id}>
-                <div className="article-item-userinfo border">{item.author.name}</div>
-                <div className="article-item-title border">
+                <div className="article-item-userinfo border-box">{item.author.name}</div>
+                <div className="article-item-title border-box">
                   <span onClick={() => navigateTo(`/social/detail/${item._id}`)}>{item.title}</span>
                 </div>
-                <div className="article-item-content border">{item.content}</div>
-                <div className="article-item-interactive border">
+                <div className="article-item-content border-box">{item.content}</div>
+                <div className="article-item-interactive border-box">
                   <span>发布时间：{dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
                   <span>点赞：{item.likes.length}</span>
                   <span>评论：{item.comments.length}</span>
@@ -97,7 +97,7 @@ export default function Home() {
         </div>
       </div>
       <div className="box-right ml-20">
-        <div className="box-right-userinfo border mt-20">
+        <div className="box-right-userinfo border-box mt-20">
           <p>欢迎 {name}</p>
           <Button type="primary" shape="round" icon={<FormOutlined />} onClick={showModal}>
             发布帖子
