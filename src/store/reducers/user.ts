@@ -1,4 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { Button, message } from 'antd'
+
 // import type { userInfoType, LoginType } from '@/types/user'
 // 创建异步操作的 thunk 函数
 
@@ -6,27 +8,34 @@ export const loginUserThunk: any = createAsyncThunk('xxx', async (credentials: L
   return credentials
 })
 
+const initialState = {
+  name: localStorage.getItem('name') || '',
+  token: localStorage.getItem('token') || '',
+  email: localStorage.getItem('email') || '',
+  avatar: localStorage.getItem('avatar') || ''
+}
+
 const userSlice = createSlice({
   name: 'user',
-  initialState: {
-    username: localStorage.getItem('username') || '',
-    token: localStorage.getItem('token') || '',
-    email: localStorage.getItem('email') || ''
-  },
+  initialState,
   reducers: {
     saveLoginInfo(state, action) {
-      state.username = action.payload.username
-      state.token = action.payload.token
+      state.name = action.payload.name
       state.email = action.payload.email
-      localStorage.setItem('username', action.payload.username)
-      localStorage.setItem('token', action.payload.token)
+      state.avatar = action.payload.avatar
+      state.token = action.payload.token || state.token
+
+      localStorage.setItem('name', action.payload.name)
       localStorage.setItem('email', action.payload.email)
+      localStorage.setItem('avatar', action.payload.avatar)
+      localStorage.setItem('token', action.payload.token || state.token)
     },
-    logout(state) {
-      state.username = ''
-      state.token = ''
-      state.email = ''
+
+    logout() {
+      message.success('退出成功')
+
       localStorage.clear()
+      return initialState
     }
   },
   extraReducers: (builder) => {

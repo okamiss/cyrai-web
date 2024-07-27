@@ -5,11 +5,13 @@ export const HeaderWrapper = styled.div`
   font-size: 14px;
   background-color: var(--primary-color);
   color: #fff;
-height: 100px;
+  height: 100px;
+  position: fixed;
+  top: 0;
+  z-index: 999;
   .content {
     width: var(--container-width);
     margin: 0 auto;
- 
     .select-list {
       line-height: 100px;
       .right {

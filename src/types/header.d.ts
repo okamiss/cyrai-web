@@ -1,7 +1,7 @@
 
 
 interface AccountType {
-  username: string
+  name: string
   password: string
   email: string
 }

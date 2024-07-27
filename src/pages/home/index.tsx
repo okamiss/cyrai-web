@@ -5,10 +5,10 @@ import { BannerBox, ListBox } from './style'
 export default function Home() {
   return (
     <Fragment>
-      <BannerBox className="border"></BannerBox>
+      <BannerBox className="border-box"></BannerBox>
       <ListBox className='mt-20'>
-        <div className="list-left border"></div>
-        <div className="list-right border"></div>
+        <div className="list-left border-box"></div>
+        <div className="list-right border-box"></div>
       </ListBox>
     </Fragment>
   )

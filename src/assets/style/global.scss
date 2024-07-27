@@ -7,58 +7,12 @@
 
 $border-info: 1px solid #ccc;
 
-.border {
+.border-box {
   border: $border-info;
 }
 
-// 上边距
-.mt-5 {
-  margin-top: 5px;
+.m-1200-auto {
+  width: var(--container-width);
+  margin: 0 auto;
 }
 
-.mt-10 {
-  margin-top: 10px;
-}
-
-.mt-20 {
-  margin-top: 20px;
-}
-
-// 下边距
-.mb-5 {
-  margin-bottom: 5px;
-}
-
-.mb-10 {
-  margin-bottom: 10px;
-}
-
-.mb-20 {
-  margin-bottom: 20px;
-}
-
-// 左边距
-.ml-5 {
-  margin-left: 5px;
-}
-
-.ml-10 {
-  margin-left: 10px;
-}
-
-.ml-20 {
-  margin-left: 20px;
-}
-
-// 右边距
-.mr-5 {
-  margin-right: 5px;
-}
-
-.mr-10 {
-  margin-right: 10px;
-}
-
-.mr-20 {
-  margin-right: 20px;
-}
