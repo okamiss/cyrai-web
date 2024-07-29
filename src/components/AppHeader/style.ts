@@ -25,14 +25,14 @@ export const HeaderWrapper = styled.div`
           display: block;
           padding: 0 30px;
           color: #ccc;
-          font-size: 20px;
+          font-size: 16px;
           text-decoration: none;
           cursor: pointer;
         }
         &:hover a,
         a.active {
-          color: #fff;
-          background: rgba(255, 255, 255, 0.5);
+          color: #75e6db;
+          /* background: rgba(255, 255, 255, 0.5); */
         }
       }
     }

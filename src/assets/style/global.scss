@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #3498db;
+  --primary-color: #0045a8;
   --secondary-color: #2ecc71;
   --font-size-base: 16px;
   --container-width: 1200px;
@@ -16,3 +16,6 @@ $border-info: 1px solid #ccc;
   margin: 0 auto;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}

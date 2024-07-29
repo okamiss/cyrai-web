@@ -1,5 +1,15 @@
-.header {
-    font-size: 20px;
-    color:$color
-  }
-  
+.inactive {
+  position: relative;
+  top: 0px;
+  opacity: 0;
+  transition: all 0.5s ease 0s;
+  transform: translateY(-100%);
+}
+
+.active {
+  position: relative;
+  top: 0px;
+  opacity: 1;
+  transition: all 0.5s ease 0s;
+  transform: translateY(0px);
+}

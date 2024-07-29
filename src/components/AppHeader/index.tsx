@@ -1,15 +1,17 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { TinyColor } from '@ctrl/tinycolor'
 import { Button, ConfigProvider, Dropdown, Form, Input, Modal, message } from 'antd'
 import { headerLinks } from '@/common/local-data'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-// import styles  from './index.module.scss'
+
 import { HeaderWrapper } from './style'
 import { userRegister, userLogin } from '@/apis/user'
 import { logout, saveLoginInfo } from '@/store/reducers/user'
 
 import type { FormProps, MenuProps } from 'antd'
+
+import styles from './index.module.scss'
 
 const colors1 = ['#6253E1', '#04BEFE']
 const colors2 = ['#40e495', '#30dd8a', '#2bb673']
@@ -38,6 +40,31 @@ const AppHeader: React.FC = () => {
   const [form] = Form.useForm()
 
   const navigateTo = useNavigate()
+
+  const [scrollDirection, setScrollDirection] = useState('')
+  const [lastScrollTop, setLastScrollTop] = useState(0)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop
+      console.log(currentScrollTop, lastScrollTop, 'currentScrollTop')
+
+      if (!currentScrollTop) {
+        setScrollDirection('')
+      } else if (currentScrollTop > lastScrollTop) {
+        setScrollDirection('down')
+      } else if (currentScrollTop < lastScrollTop) {
+        setScrollDirection('up')
+      }
+      setLastScrollTop(currentScrollTop)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [lastScrollTop])
 
   const items: MenuProps['items'] = [
     {
@@ -116,7 +143,15 @@ const AppHeader: React.FC = () => {
     <Fragment>
       {contextHolder}
       {contextHolder2}
-      <HeaderWrapper>
+      <HeaderWrapper
+        className={`${
+          scrollDirection === 'up'
+            ? styles.active
+            : scrollDirection === 'down'
+            ? styles.inactive
+            : ''
+        }`}
+      >
         <div className="content">
           <div className="select-list">
             {headerLinks.map((item, index) => {
