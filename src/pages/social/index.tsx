@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { SyntheticEvent, useEffect, useState } from 'react'
 
 import { useSelector } from 'react-redux'
 import { ContentBox } from './style'
@@ -11,6 +11,7 @@ const { TextArea } = Input
 import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
 import Emoji from '@/components/Emoji'
+import styles from './index.module.scss'
 
 export default function Home() {
   const navigateTo = useNavigate()
@@ -22,18 +23,18 @@ export default function Home() {
   const [listQuery, setListQuery] = useState({ page: 1, limit: 10 })
   const [form] = Form.useForm()
 
-  const discussInit = {
-    title: '',
-    content: '',
-    fileList: ''
+  const [cursorPosition, setCursorPosition] = useState(0)
+
+  const handleInputChange = (e: any) => {
+    const input = e.target
+    setCursorPosition(input.selectionStart)
   }
-  const [discuss, discussState] = useState(discussInit)
+
   const saveQuery = (value: string, key: string) => {
-    console.log(value, key, '@@@@')
+    const getNowVal = form.getFieldValue(key) || ''
 
-    discussState({ ...discuss, [key]: value })
-
-    form.setFieldsValue({})
+    const newValue = getNowVal.slice(0, cursorPosition) + value + getNowVal.slice(cursorPosition)
+    form.setFieldValue(key, newValue)
   }
 
   useEffect(() => {
@@ -138,20 +139,30 @@ export default function Home() {
             name="title"
             rules={[{ required: true, message: '请输入标题！' }]}
           >
-            <Input onChange={(e) => saveQuery(e.target.value, 'title')} />
+            <Input
+              onChange={(e) => handleInputChange(e)}
+              onClick={(e) => handleInputChange(e)}
+              suffix={<Emoji onEmoji={(e: string) => saveQuery(e, 'title')} />}
+            />
           </Form.Item>
           <Form.Item<sendArticle>
             label="内容"
             name="content"
             rules={[{ required: true, message: '请输入内容！' }]}
           >
-            <TextArea autoSize={{ minRows: 5, maxRows: 10 }} />
+            <TextArea
+              autoSize={{ minRows: 5, maxRows: 10 }}
+              onChange={(e) => handleInputChange(e)}
+              onClick={(e) => handleInputChange(e)}
+            />
           </Form.Item>
-          <Form.Item<sendArticle> label="内容">
-            <Emoji onEmoji={(e: string) => saveQuery(discuss.content + e, 'content')} />
-          </Form.Item>
+          {/* <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
+            <Emoji onEmoji={(e: string) => saveQuery(e, 'content')} />
+          </Form.Item> */}
 
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <Form.Item<sendArticle> label="图文视频" name="filelist"></Form.Item>
+
+          <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
             <Button type="primary" htmlType="submit">
               发布
             </Button>

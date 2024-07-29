@@ -11,6 +11,13 @@ interface sendArticle {
   title: string
   content: string
   author?: string
+  filelist?:artFile[]
+}
+
+interface artFile {
+  name:string
+  path:string
+  suffix:string
 }
 
 interface getArticle extends DefaultResponseTemplate {

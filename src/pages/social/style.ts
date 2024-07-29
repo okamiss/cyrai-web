@@ -38,6 +38,7 @@ export const ContentBox = styled.div`
   }
   .box-right {
     flex: 1;
+   
     &-userinfo {
       width: 100%;
       height: 400px;

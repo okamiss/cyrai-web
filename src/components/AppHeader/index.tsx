@@ -47,7 +47,6 @@ const AppHeader: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop
-      console.log(currentScrollTop, lastScrollTop, 'currentScrollTop')
 
       if (!currentScrollTop) {
         setScrollDirection('')
