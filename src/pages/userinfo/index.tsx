@@ -63,7 +63,6 @@ export default function Userinfo() {
       // Get this url from response in real world.
       getBase64(info.file.originFileObj as FileType, (url) => {
         setLoading(false)
-
         setImageUrl(url)
       })
       const { code, data } = info.file.response

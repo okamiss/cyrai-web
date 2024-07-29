@@ -1,9 +1,9 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useSelector } from 'react-redux'
 import { ContentBox } from './style'
-import { Button, ConfigProvider, Form, Input, Modal, Pagination, message } from 'antd'
-import { FormOutlined } from '@ant-design/icons'
+import { Button, Form, Input, Modal, Pagination, Upload, message } from 'antd'
+import { FormOutlined, InboxOutlined } from '@ant-design/icons'
 import type { FormProps } from 'antd'
 import { getArticle, sendArticle } from '@/apis/article'
 const { TextArea } = Input
@@ -11,19 +11,22 @@ const { TextArea } = Input
 import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
 import Emoji from '@/components/Emoji'
-import styles from './index.module.scss'
+
+import type { UploadProps } from 'antd'
+const { Dragger } = Upload
 
 export default function Home() {
   const navigateTo = useNavigate()
   const name = useSelector((state: RootState) => state.user.name)
+  const token = useSelector((state: RootState) => state.user.token)
   const [messageApi, contextHolder] = message.useMessage()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [articleList, setArticleList] = useState<getArticleBody[]>([])
   const [total, setTotal] = useState(0)
   const [listQuery, setListQuery] = useState({ page: 1, limit: 10 })
   const [form] = Form.useForm()
-
   const [cursorPosition, setCursorPosition] = useState(0)
+  const [filelist, setFilelist] = useState<any>([])
 
   const handleInputChange = (e: any) => {
     const input = e.target
@@ -68,7 +71,26 @@ export default function Home() {
   // 发布文章
   const onFinish: FormProps<sendArticle>['onFinish'] = (values) => {
     console.log(values)
-    sendArticle(values).then((res) => {
+    console.log(filelist, 'filelist')
+
+    const newList: any = []
+
+    filelist.forEach((item: { response: { code: number; data: artFile[] } }) => {
+      if (item.response.code === 200) {
+        item.response.data.forEach((it2: artFile) => {
+          const { createdAt, filename, mimetype, originalname, path } = it2
+          newList.push({
+            createdAt,
+            filename,
+            mimetype,
+            originalname,
+            path
+          })
+        })
+      }
+    })
+
+    sendArticle({ ...values, fields: newList }).then((res) => {
       messageApi.open({
         type: 'success',
         content: res.message
@@ -77,6 +99,33 @@ export default function Home() {
       handleCancel()
       form.resetFields()
     })
+  }
+
+  const props: UploadProps = {
+    name: 'file',
+    multiple: true,
+    action: 'http://127.0.0.1:5000/api/upload',
+    headers: {
+      Authorization: token
+    },
+    onRemove(e) {
+      console.log(e)
+    },
+    onChange(info) {
+      const { status } = info.file
+      if (status !== 'uploading') {
+        console.log(info.file, info.fileList)
+        setFilelist(info.fileList)
+      }
+      if (status === 'done') {
+        message.success(`${info.file.name} 上传成功`)
+      } else if (status === 'error') {
+        message.error(`${info.file.name} 上传失败`)
+      }
+    },
+    onDrop(e) {
+      console.log('Dropped files', e.dataTransfer.files)
+    }
   }
 
   return (
@@ -160,7 +209,18 @@ export default function Home() {
             <Emoji onEmoji={(e: string) => saveQuery(e, 'content')} />
           </Form.Item> */}
 
-          <Form.Item<sendArticle> label="图文视频" name="filelist"></Form.Item>
+          <Form.Item<sendArticle> label="图文视频">
+            <Dragger {...props}>
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">Click or drag file to this area to upload</p>
+              <p className="ant-upload-hint">
+                Support for a single or bulk upload. Strictly prohibited from uploading company data
+                or other banned files.
+              </p>
+            </Dragger>
+          </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
             <Button type="primary" htmlType="submit">
