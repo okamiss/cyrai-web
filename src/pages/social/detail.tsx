@@ -18,7 +18,8 @@ export default function detail() {
     content: '',
     author: {
       _id: '',
-      name: ''
+      name: '',
+      avatar:'',
     },
     likes: [],
     createdAt: '',

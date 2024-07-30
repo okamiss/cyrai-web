@@ -2,8 +2,14 @@ import React, { useEffect, useState } from 'react'
 
 import { useSelector } from 'react-redux'
 import { ContentBox } from './style'
-import { Button, Form, Input, Modal, Pagination, Upload, message } from 'antd'
-import { FormOutlined, InboxOutlined } from '@ant-design/icons'
+import { Button, Divider, Form, Input, Modal, Pagination, Upload, message } from 'antd'
+import {
+  FormOutlined,
+  InboxOutlined,
+  EyeOutlined,
+  HeartTwoTone,
+  MessageOutlined
+} from '@ant-design/icons'
 import type { FormProps } from 'antd'
 import { getArticle, sendArticle } from '@/apis/article'
 const { TextArea } = Input
@@ -13,6 +19,7 @@ import { useNavigate } from 'react-router-dom'
 import Emoji from '@/components/Emoji'
 
 import type { UploadProps } from 'antd'
+import { getFileTypeByMime } from '@/utils/tool'
 const { Dragger } = Upload
 
 export default function Home() {
@@ -27,7 +34,7 @@ export default function Home() {
   const [form] = Form.useForm()
   const [cursorPosition, setCursorPosition] = useState(0)
   const [filelist, setFilelist] = useState<any>([])
-  const [getFilelist, setGetFilelist] = useState([])
+  // const [getFilelist, setGetFilelist] = useState([])
 
   const handleInputChange = (e: any) => {
     const input = e.target
@@ -64,6 +71,11 @@ export default function Home() {
   const getDataList = () => {
     getArticle(listQuery).then((res) => {
       const { articles, total } = res.data
+      articles.forEach((item) => {
+        item.fields.forEach((fs) => {
+          fs.fsType = getFileTypeByMime(fs.mimetype)
+        })
+      })
       setTotal(total)
       setArticleList(articles)
     })
@@ -92,7 +104,7 @@ export default function Home() {
         type: 'success',
         content: res.message
       })
-
+      setFilelist([])
       getDataList()
       handleCancel()
       form.resetFields()
@@ -107,18 +119,25 @@ export default function Home() {
     headers: {
       Authorization: token
     },
-    onChange(info) {
-      const { status } = info.file
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList)
-        setFilelist(info.fileList)
-      }
-      if (status === 'done') {
-        message.success(`${info.file.name} 上传成功`)
-      } else if (status === 'error') {
-        message.error(`${info.file.name} 上传失败`)
-      }
+    fileList: filelist,
+    onChange({ fileList: newFileList }) {
+      console.log(newFileList, 'newFileList')
+      setFilelist(newFileList)
     },
+    // onChange(info) {
+    //   const { status } = info.file
+    //   if (status !== 'uploading') {
+    //     console.log(info.file, info.fileList)
+    //     // setFilelist(info.fileList)
+    //   }
+    //   if (status === 'done') {
+    //     console.log(info);
+
+    //     message.success(`${info.file.name} 上传成功`)
+    //   } else if (status === 'error') {
+    //     message.error(`${info.file.name} 上传失败`)
+    //   }
+    // },
     onDrop(e) {
       console.log('Dropped files', e.dataTransfer.files)
     }
@@ -129,20 +148,55 @@ export default function Home() {
       {contextHolder}
       <div className="box-left">
         <div className="box-left-banner border-box mt-20"></div>
-        <div className="box-left-article border-box mt-20">
+        <div className="box-left-article  mt-20">
           {articleList.map((item) => {
             return (
               <div className="article-item" key={item._id}>
-                <div className="article-item-userinfo border-box">{item.author.name}</div>
-                <div className="article-item-title border-box">
+                <div className="article-item-userinfo">
+                  <img src={item.author.avatar} alt={item.author.name} />
+                  <span>{item.author.name}</span>
+                </div>
+                <div className="article-item-title ">
                   <span onClick={() => navigateTo(`/social/detail/${item._id}`)}>{item.title}</span>
                 </div>
-                <div className="article-item-content border-box">{item.content}</div>
-                <div className="article-item-interactive border-box">
+                <div
+                  className="article-item-content"
+                  onClick={() => navigateTo(`/social/detail/${item._id}`)}
+                >
+                  {item.content}
+                </div>
+                <div
+                  className="article-item-fileds mt-5"
+                  onClick={() => navigateTo(`/social/detail/${item._id}`)}
+                >
+                  {item.fields
+                    .slice(0, 3)
+                    .map((item) =>
+                      item.fsType === 'image' ? (
+                        <img src={item.path} key={item._id} />
+                      ) : (
+                        <video src={item.path} key={item._id}></video>
+                      )
+                    )}
+                </div>
+                <div className="article-item-interactive mt-8">
                   <span>发布时间：{dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
-                  <span>浏览量：{item.totalViews}</span>
-                  <span>点赞：{item.likes.length}</span>
-                  <span>评论：{item.comments.length}</span>
+                  <div className="flexpldz">
+                    <span>
+                      <EyeOutlined /> &nbsp;
+                      {item.totalViews}
+                    </span>
+                    <span>
+                      <HeartTwoTone twoToneColor="#eb2f96" />
+                      &nbsp;
+                      {item.likes.length}
+                    </span>
+                    <span>
+                      <MessageOutlined twoToneColor="#52c41a" />
+                      &nbsp;
+                      {item.comments.length}
+                    </span>
+                  </div>
                 </div>
               </div>
             )
@@ -206,16 +260,13 @@ export default function Home() {
             <Emoji onEmoji={(e: string) => saveQuery(e, 'content')} />
           </Form.Item> */}
 
-          <Form.Item<sendArticle> label="图文视频">
+          <Form.Item label="图文视频">
             <Dragger {...props}>
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
               </p>
-              <p className="ant-upload-text">Click or drag file to this area to upload</p>
-              <p className="ant-upload-hint">
-                Support for a single or bulk upload. Strictly prohibited from uploading company data
-                or other banned files.
-              </p>
+              <p className="ant-upload-text">单击或拖动文件到此区域进行上传</p>
+              <p className="ant-upload-hint">支持单个或批量上传。</p>
             </Dragger>
           </Form.Item>
 

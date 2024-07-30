@@ -49,10 +49,7 @@ export default function Userinfo() {
   const getInfoList = () => {
     getUserInfo().then((res) => {
       setUserinfo(res.data)
-      console.log(res.data.avatar);
-      console.log(res.data.avatar?.replace(/\\+/g, '/'));
-      
-      setImageUrl(`${import.meta.env.VITE_SERVE}/${res.data.avatar?.replace(/\\+/g, '/')}`)
+      setImageUrl(res.data.avatar)
       dispatch(saveLoginInfo(res.data))
     })
   }
