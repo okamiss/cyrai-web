@@ -20,20 +20,19 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     saveLoginInfo(state, action) {
-      state.name = action.payload.name
-      state.email = action.payload.email
-      state.avatar = action.payload.avatar
-      state.token = action.payload.token || state.token
+      const { name, email, avatar, token } = action.payload
+      state.name = name
+      state.email = email
+      state.avatar = avatar
+      state.token = token || state.token
 
-      localStorage.setItem('name', action.payload.name)
-      localStorage.setItem('email', action.payload.email)
-      localStorage.setItem('avatar', action.payload.avatar)
-      localStorage.setItem('token', action.payload.token || state.token)
+      localStorage.setItem('name', name)
+      localStorage.setItem('email', email)
+      localStorage.setItem('avatar', avatar)
+      localStorage.setItem('token', token || state.token)
     },
 
     logout() {
-      message.success('退出成功')
-
       localStorage.clear()
       return initialState
     }

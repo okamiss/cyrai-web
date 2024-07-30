@@ -98,7 +98,7 @@ export default function Userinfo() {
           listType="picture-circle"
           className="avatar-uploader"
           showUploadList={false}
-          action="http://127.0.0.1:5000/api/upload"
+          action={`${import.meta.env.VITE_SERVE}/api/upload`}
           beforeUpload={beforeUpload}
           onChange={handleChange}
           headers={{

@@ -1,6 +1,9 @@
-import {  message } from 'antd';
+import { message } from 'antd'
 
 import axios from 'axios'
+
+import store from '@/store'
+import { logout } from '@/store/reducers/user'
 
 // import { useSelector, useDispatch } from 'react-redux'
 
@@ -36,16 +39,16 @@ instance.interceptors.response.use(
     // const userStore = useUserStore()
     if (data?.code == 200) {
       return data
+    } else if (data?.code == 201) {
+      message.error(data.message)
+      store.dispatch(logout())
     } else {
-      console.log('@@@@@@@@@@@@@');
-      console.log(data);
-      
-      message.error(data.message);
+      message.error(data.message)
       return Promise.reject(data)
     }
   },
   (err) => {
-    message.error(err.response.data.message);
+    message.error(err.response.data.message)
     return Promise.reject(err)
   }
 )

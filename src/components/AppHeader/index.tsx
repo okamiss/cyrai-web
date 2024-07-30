@@ -79,6 +79,7 @@ const AppHeader: React.FC = () => {
       onClick: async () => {
         const confirmed = await modal.confirm(config)
         if (confirmed) {
+          message.success('退出成功')
           dispatch(logout())
         }
       }

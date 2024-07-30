@@ -46,6 +46,7 @@ interface getArticleBody {
   createdAt: string
   comments: any[]
   __v?: number
+  totalViews:number
 }
 
 interface Author {

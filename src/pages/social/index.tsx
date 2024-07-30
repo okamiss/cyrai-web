@@ -78,9 +78,8 @@ export default function Home() {
     filelist.forEach((item: { response: { code: number; data: artFile[] } }) => {
       if (item.response.code === 200) {
         item.response.data.forEach((it2: artFile) => {
-          const { createdAt, filename, mimetype, originalname, path } = it2
+          const { filename, mimetype, originalname, path } = it2
           newList.push({
-            createdAt,
             filename,
             mimetype,
             originalname,
@@ -104,7 +103,7 @@ export default function Home() {
   const props: UploadProps = {
     name: 'file',
     multiple: true,
-    action: 'http://127.0.0.1:5000/api/upload',
+    action: `${import.meta.env.VITE_SERVE}/api/upload`,
     headers: {
       Authorization: token
     },
@@ -144,6 +143,7 @@ export default function Home() {
                 <div className="article-item-content border-box">{item.content}</div>
                 <div className="article-item-interactive border-box">
                   <span>发布时间：{dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
+                  <span>浏览量：{item.totalViews}</span>
                   <span>点赞：{item.likes.length}</span>
                   <span>评论：{item.comments.length}</span>
                 </div>
