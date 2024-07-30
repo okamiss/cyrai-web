@@ -49,7 +49,10 @@ export default function Userinfo() {
   const getInfoList = () => {
     getUserInfo().then((res) => {
       setUserinfo(res.data)
-      setImageUrl(`${import.meta.env.VITE_SERVE}/${res.data.avatar}`)
+      console.log(res.data.avatar);
+      console.log(res.data.avatar?.replace(/\\+/g, '/'));
+      
+      setImageUrl(`${import.meta.env.VITE_SERVE}/${res.data.avatar?.replace(/\\+/g, '/')}`)
       dispatch(saveLoginInfo(res.data))
     })
   }
@@ -67,7 +70,7 @@ export default function Userinfo() {
       })
       const { code, data } = info.file.response
       console.log(code, data)
-      setUserinfo({ ...userinfo, avatar: data[0].filename })
+      setUserinfo({ ...userinfo, avatar: data[0].path })
     }
   }
 
@@ -99,6 +102,7 @@ export default function Userinfo() {
           className="avatar-uploader"
           showUploadList={false}
           action={`${import.meta.env.VITE_SERVE}/api/upload`}
+          accept={'.jpg,.jpeg,.png,.gif'}
           beforeUpload={beforeUpload}
           onChange={handleChange}
           headers={{

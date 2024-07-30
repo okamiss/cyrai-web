@@ -103,6 +103,7 @@ export default function Home() {
     name: 'artFile',
     multiple: true,
     action: `${import.meta.env.VITE_SERVE}/api/upload`,
+    accept: '.jpg,.jpeg,.png,.gif,.mp4',
     headers: {
       Authorization: token
     },
