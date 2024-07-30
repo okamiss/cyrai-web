@@ -27,6 +27,7 @@ export default function Home() {
   const [form] = Form.useForm()
   const [cursorPosition, setCursorPosition] = useState(0)
   const [filelist, setFilelist] = useState<any>([])
+  const [getFilelist, setGetFilelist] = useState([])
 
   const handleInputChange = (e: any) => {
     const input = e.target
@@ -70,9 +71,6 @@ export default function Home() {
 
   // 发布文章
   const onFinish: FormProps<sendArticle>['onFinish'] = (values) => {
-    console.log(values)
-    console.log(filelist, 'filelist')
-
     const newList: any = []
 
     filelist.forEach((item: { response: { code: number; data: artFile[] } }) => {
@@ -94,6 +92,7 @@ export default function Home() {
         type: 'success',
         content: res.message
       })
+
       getDataList()
       handleCancel()
       form.resetFields()
@@ -101,14 +100,11 @@ export default function Home() {
   }
 
   const props: UploadProps = {
-    name: 'file',
+    name: 'artFile',
     multiple: true,
     action: `${import.meta.env.VITE_SERVE}/api/upload`,
     headers: {
       Authorization: token
-    },
-    onRemove(e) {
-      console.log(e)
     },
     onChange(info) {
       const { status } = info.file

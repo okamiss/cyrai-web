@@ -22,7 +22,8 @@ export default function detail() {
     },
     likes: [],
     createdAt: '',
-    comments: []
+    comments: [],
+    totalViews: 0
   })
   const [messageApi, contextHolder] = message.useMessage()
   const [value, setValue] = useState('')

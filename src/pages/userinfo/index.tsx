@@ -94,7 +94,7 @@ export default function Userinfo() {
       <p>邮箱：{userinfo.email}</p>
       <ImgCrop rotationSlider>
         <Upload
-          name="file"
+          name="avatar"
           listType="picture-circle"
           className="avatar-uploader"
           showUploadList={false}
