@@ -267,6 +267,7 @@ export default function detail() {
             发表评论
           </Button>
           <Tree
+            height={500}
             showLine
             switcherIcon={<DownOutlined />}
             titleRender={titleRender}
