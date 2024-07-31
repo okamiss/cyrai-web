@@ -192,7 +192,7 @@ export default function Home() {
                       {item.likes.length}
                     </span>
                     <span>
-                      <MessageOutlined twoToneColor="#52c41a" />
+                      <MessageOutlined />
                       &nbsp;
                       {item.comments.length}
                     </span>
