@@ -5,7 +5,7 @@ interface ArtListQuery {
 
 interface commentArt {
   artId: string
-  comment: string
+  text: string
 }
 interface sendArticle {
   title: string

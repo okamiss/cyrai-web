@@ -16,10 +16,22 @@ export const sendArticle = (data: sendArticle): Promise<sendArticleRes> =>
 export const articleDetail = (params: string): Promise<sendArticleRes> =>
   request.get(`${API.GET_ARTICLE}/${params}`)
 
-// 评论
+// 发布评论
 export const commentArticle = (data: commentArt): Promise<sendArticleRes> =>
-  request.post(`${API.GET_ARTICLE}/${data.artId}/comment`, data)
+  request.post(`${API.GET_ARTICLE}/${data.artId}/comments`, data)
 
 // 点赞
 export const likeArticle = (data: string): Promise<sendArticleRes> =>
   request.post(`${API.GET_ARTICLE}/${data}/like`)
+
+// 获取评论列表
+export const getComments = (params: string): Promise<any> =>
+  request.get(`${API.GET_ARTICLE}/${params}/comments`)
+
+// 引用评论
+export const commentsReplies = (data: any): Promise<any> =>
+  request.post(`${API.GET_ARTICLE}/${data.artId}/comments/${data.commentId}/replies`, data)
+
+// 点赞评论
+export const commentsLikes = (data: string): Promise<any> =>
+  request.post(`${API.GET_ARTICLE}/comments/${data}/like`, data)

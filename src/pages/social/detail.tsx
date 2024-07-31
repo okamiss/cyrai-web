@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { articleDetail, commentArticle, likeArticle } from '@/apis/article'
+import {
+  articleDetail,
+  commentArticle,
+  likeArticle,
+  getComments,
+  commentsReplies,
+  commentsLikes
+} from '@/apis/article'
 import { useLocation } from 'react-router-dom'
 import { ArticleDetailBox } from './style'
 import { HeartOutlined } from '@ant-design/icons'
@@ -41,13 +48,22 @@ export default function detail() {
   const [messageApi, contextHolder] = message.useMessage()
   const [value, setValue] = useState('')
   const [islike, setIslike] = useState(false)
+  const [comments, setComments] = useState<any>([])
+  const [sendCtoC, setSendCtoC] = useState(false)
+  const [nowComInfo, setNowComInfo] = useState<any>({})
 
   const getUserId = useSelector((state: RootState) => state.user.userId)
-  console.log(getUserId, 'getUserId')
 
   useEffect(() => {
     getArt()
   }, [])
+
+  // 加载评论列表
+  const getCommentList = (id: string) => {
+    getComments(id).then((res) => {
+      setComments(res.data)
+    })
+  }
 
   // 文章详情
   const getArt = () => {
@@ -58,6 +74,7 @@ export default function detail() {
       const isLike = res.data.likes.some((item) => item.id === getUserId)
       setIslike(isLike)
       setArtInfo(res.data)
+      getCommentList(res.data._id)
     })
   }
 
@@ -71,18 +88,34 @@ export default function detail() {
       return
     }
 
-    const params = {
-      artId,
-      comment: value
-    }
-    commentArticle(params).then((res) => {
-      messageApi.open({
-        type: 'success',
-        content: res.message
+    if (sendCtoC) {
+      const params = {
+        artId,
+        commentId: '66a9e9b60ac2b783cc034381',
+        text: value
+      }
+      commentsReplies(params).then((res) => {
+        messageApi.open({
+          type: 'success',
+          content: res.message
+        })
+        setValue('')
+        getArt()
       })
-      setValue('')
-      getArt()
-    })
+    } else {
+      const params = {
+        artId,
+        text: value
+      }
+      commentArticle(params).then((res) => {
+        messageApi.open({
+          type: 'success',
+          content: res.message
+        })
+        setValue('')
+        getArt()
+      })
+    }
   }
 
   // 点赞
@@ -94,6 +127,18 @@ export default function detail() {
       })
       getArt()
     })
+  }
+
+  // 引用回复
+  const replySend = (item: any) => {
+    console.log(item)
+    setSendCtoC(true)
+    setNowComInfo(item)
+  }
+
+  // 评论点赞
+  const replyLike = (item: any) => {
+    commentsLikes(item._id)
   }
 
   return (
@@ -150,6 +195,8 @@ export default function detail() {
           {/* <HeartOutlined onClick={likeArt} /> <i>{artInfo.likes.length}</i> */}
         </div>
         <div className="comment">
+          {sendCtoC ? <p>正在回复：{nowComInfo.text}</p> : null}
+
           <div className="comment-tit">评论区</div>
 
           <TextArea
@@ -162,10 +209,13 @@ export default function detail() {
             发表评论
           </Button>
 
-          {artInfo.comments.map((item) => (
+          {comments.map((item: any) => (
             <div className="comment-item" key={item._id}>
-              <p>{item.user.name}</p>
-              <span>{item.comment}</span>
+              <p>
+                {item.user.name}： {item.text}
+                <span onClick={() => replySend(item)}>回复</span>
+                <span onClick={() => replyLike(item)}>点赞{item.likes}</span>
+              </p>
             </div>
           ))}
         </div>
