@@ -156,11 +156,11 @@ export default function Home() {
                   <img src={item.author.avatar} alt={item.author.name} />
                   <span>{item.author.name}</span>
                 </div>
-                <div className="article-item-title ">
+                <div className="article-item-title over-nobreak">
                   <span onClick={() => navigateTo(`/social/detail/${item._id}`)}>{item.title}</span>
                 </div>
                 <div
-                  className="article-item-content"
+                  className="article-item-content over-nobreak-2"
                   onClick={() => navigateTo(`/social/detail/${item._id}`)}
                 >
                   {item.content}

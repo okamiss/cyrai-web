@@ -29,6 +29,7 @@
     "reset-css": "^5.0.2",
     "sass": "^1.77.6",
     "styled-components": "^6.1.11",
+    "swiper": "^11.1.8",
     "tsparticles": "^3.4.0",
     "tsparticles-slim": "^2.12.0",
     "unocss": "^0.61.5",

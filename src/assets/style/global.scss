@@ -19,3 +19,20 @@ $border-info: 1px solid #ccc;
 ::-webkit-scrollbar {
   display: none;
 }
+
+.over-nobreak {
+  overflow: hidden; /*内容超出后隐藏*/
+  text-overflow: ellipsis; /*超出内容显示为省略号*/
+  white-space: nowrap; /*文本不进行换行*/
+}
+
+$max-rows: 5;
+@for $i from 1 through $max-rows {
+  .over-nobreak-#{$i} {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: #{$i};
+  }
+}

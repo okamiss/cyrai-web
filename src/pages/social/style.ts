@@ -33,9 +33,6 @@ export const ContentBox = styled.div`
           height: 30px;
           line-height: 30px;
           font-weight: bold;
-          overflow: hidden; /*内容超出后隐藏*/
-          text-overflow: ellipsis; /*超出内容显示为省略号*/
-          white-space: nowrap; /*文本不进行换行*/
           border-bottom: 1px dashed #ccc;
           cursor: pointer;
         }
@@ -44,11 +41,6 @@ export const ContentBox = styled.div`
           overflow-y: scroll; */
           font-size: 16px;
           line-height: 25px;
-          overflow: hidden; /*内容超出后隐藏*/
-          text-overflow: ellipsis; /*超出内容显示为省略号*/
-          display: -webkit-box; /*将对象作为弹性伸缩盒子模型显示*/
-          -webkit-box-orient: vertical; /*从上到下垂直排列子元素（设置伸缩盒子的子元素排列方式）*/
-          -webkit-line-clamp: 2; /*这个属性不是css的规范属性，需要组合上面两个属性，表示显示的行数。可根据需要设置超出多少行后显示省略号*/
           cursor: pointer;
         }
         &-fileds {
@@ -65,7 +57,7 @@ export const ContentBox = styled.div`
           height: 20px;
           display: flex;
           justify-content: space-between;
-          .flexpldz{
+          .flexpldz {
             width: 150px;
             display: flex;
             justify-content: space-between;
@@ -85,14 +77,54 @@ export const ContentBox = styled.div`
 `
 
 export const ArticleDetailBox = styled.div`
-  .title {
-    text-align: center;
-    line-height: 100px;
+  display: flex;
+  padding-top: 50px;
+  .art-left {
+    width: 50%;
+    .artSwiper {
+      height: 100%;
+      img,
+      video {
+        width: 100%;
+      }
+    }
   }
-  .desc {
-    text-align: center;
-    line-height: 50px;
+  .art-right {
+    flex: 1;
+    .author {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px dashed #ccc;
+      img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+      }
+    }
+    .title {
+      line-height: 30px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .desc {
+      line-height: 25px;
+    }
+    .respond{
+      display: flex;
+      justify-content: center;
+      span{
+        display: flex;
+        align-items: center;
+        margin: 0 10px;
+        cursor: pointer;
+        svg{
+          margin-right: 5px;
+        }
+      }
+    }
   }
+
   .content {
     line-height: 25px;
   }
