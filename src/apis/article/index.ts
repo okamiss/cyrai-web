@@ -24,9 +24,13 @@ export const commentArticle = (data: commentArt): Promise<sendArticleRes> =>
 export const likeArticle = (data: string): Promise<sendArticleRes> =>
   request.post(`${API.GET_ARTICLE}/${data}/like`)
 
-// 获取评论列表
+// 获取外层评论列表
 export const getComments = (params: string): Promise<any> =>
   request.get(`${API.GET_ARTICLE}/${params}/comments`)
+
+// 获取内层评论列表
+export const getcommentsReplies = (params: string): Promise<any> =>
+  request.get(`${API.GET_ARTICLE}/comments/${params}/replies`)
 
 // 引用评论
 export const commentsReplies = (data: any): Promise<any> =>

@@ -110,15 +110,15 @@ export const ArticleDetailBox = styled.div`
     .desc {
       line-height: 25px;
     }
-    .respond{
+    .respond {
       display: flex;
       justify-content: center;
-      span{
+      span {
         display: flex;
         align-items: center;
         margin: 0 10px;
         cursor: pointer;
-        svg{
+        svg {
           margin-right: 5px;
         }
       }
@@ -152,5 +152,15 @@ export const ArticleDetailBox = styled.div`
         line-height: 30px;
       }
     }
+  }
+
+  .commentlist {
+    display: flex;
+    align-items: center;
+    img {
+      width: 32px;
+      height: 32px;
+    }
+   
   }
 `

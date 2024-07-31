@@ -50,10 +50,25 @@ interface getArticleBody {
   fields: any[]
 }
 
-
-
 interface Author {
   _id: string
+  name: string
+  avatar: string
+}
+
+interface replies {
+  user: repliesUser
+  _id: string
+  isLeaf: boolean
+  text: string
+  replies?: replies[]
+  likes: number
+  createdAt: string
+  __v: number
+}
+
+interface repliesUser {
+  id: string
   name: string
   avatar: string
 }

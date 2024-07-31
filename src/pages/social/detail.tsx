@@ -5,12 +5,13 @@ import {
   likeArticle,
   getComments,
   commentsReplies,
-  commentsLikes
+  commentsLikes,
+  getcommentsReplies
 } from '@/apis/article'
 import { useLocation } from 'react-router-dom'
 import { ArticleDetailBox } from './style'
-import { HeartOutlined } from '@ant-design/icons'
-import { Button, Input, message } from 'antd'
+import { HeartOutlined, DownOutlined } from '@ant-design/icons'
+import { Button, Input, Tree, message } from 'antd'
 import { getFileTypeByMime } from '@/utils/tool'
 const { TextArea } = Input
 
@@ -61,6 +62,9 @@ export default function detail() {
   // 加载评论列表
   const getCommentList = (id: string) => {
     getComments(id).then((res) => {
+      res.data.forEach((item: replies) => {
+        delete item.replies
+      })
       setComments(res.data)
     })
   }
@@ -91,7 +95,7 @@ export default function detail() {
     if (sendCtoC) {
       const params = {
         artId,
-        commentId: '66a9e9b60ac2b783cc034381',
+        commentId: nowComInfo._id,
         text: value
       }
       commentsReplies(params).then((res) => {
@@ -100,7 +104,8 @@ export default function detail() {
           content: res.message
         })
         setValue('')
-        getArt()
+        onLoadData({ _id: nowComInfo._id })
+        // getArt()
       })
     } else {
       const params = {
@@ -113,7 +118,7 @@ export default function detail() {
           content: res.message
         })
         setValue('')
-        getArt()
+        // getArt()
       })
     }
   }
@@ -125,20 +130,73 @@ export default function detail() {
         type: 'success',
         content: res.message
       })
-      getArt()
+      setIslike(true)
+      setArtInfo({ ...artInfo, likes: [...artInfo.likes, {}] })
+      // getArt()
     })
   }
 
   // 引用回复
   const replySend = (item: any) => {
-    console.log(item)
     setSendCtoC(true)
     setNowComInfo(item)
   }
 
   // 评论点赞
-  const replyLike = (item: any) => {
-    commentsLikes(item._id)
+  const replyLike = (id: string) => {
+    commentsLikes(id)
+  }
+
+  // 获取内层评论
+  // const getInserComments = (id: string) => {
+  //   getcommentsReplies(id)
+  // }
+
+  const updateTreeData = (list: replies[], _id: React.Key, replies: replies[]): replies[] =>
+    list.map((node) => {
+      if (node._id === _id) {
+        return {
+          ...node,
+          replies
+        }
+      }
+      if (node.replies) {
+        return {
+          ...node,
+          replies: updateTreeData(node.replies, _id, replies)
+        }
+      }
+      return node
+    })
+
+  const onLoadData = ({ _id, replies }: any) =>
+    new Promise<void>((resolve) => {
+      if (replies) {
+        resolve()
+        return
+      }
+      console.log(_id, replies)
+      getcommentsReplies(_id).then((res) => {
+        res.data.forEach((item: replies) => {
+          delete item.replies
+        })
+        setComments((origin: any) => updateTreeData(origin, _id, res.data))
+        resolve()
+      })
+    })
+
+  const titleRender = (nodeData: replies) => {
+    return (
+      <div className="commentlist">
+        <img src={nodeData.user.avatar} alt="" />
+        <span className="ml-5">{nodeData.text}</span>
+        <HeartOutlined onClick={() => replyLike(nodeData._id)} className="ml-5" />
+        {nodeData.likes}
+        <span className="ml-5" onClick={() => replySend(nodeData)}>
+          回复
+        </span>
+      </div>
+    )
   }
 
   return (
@@ -208,16 +266,25 @@ export default function detail() {
           <Button type="primary" onClick={sendComment}>
             发表评论
           </Button>
+          <Tree
+            showLine
+            switcherIcon={<DownOutlined />}
+            titleRender={titleRender}
+            fieldNames={{ title: 'text', key: '_id', children: 'replies' }}
+            loadData={onLoadData}
+            treeData={comments}
+          />
 
-          {comments.map((item: any) => (
+          {/* {comments.map((item: any) => (
             <div className="comment-item" key={item._id}>
               <p>
                 {item.user.name}： {item.text}
                 <span onClick={() => replySend(item)}>回复</span>
-                <span onClick={() => replyLike(item)}>点赞{item.likes}</span>
+                <span onClick={() => replyLike(item._id)}>点赞{item.likes}</span>
+                <span onClick={() => getInserComments(item._id)}>获取内层评论</span>
               </p>
             </div>
-          ))}
+          ))} */}
         </div>
       </div>
     </ArticleDetailBox>
