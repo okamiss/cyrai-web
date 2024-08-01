@@ -189,6 +189,8 @@ export const ArticleDetailBox = styled.div`
       }
       &-right {
         cursor: pointer;
+        display: flex;
+        align-items: center;
       }
     }
   }

@@ -27,6 +27,7 @@ import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
 import SvgIcon from '@/components/SvgIcon'
 import { useSelector } from 'react-redux'
+import dayjs from 'dayjs'
 
 export default function detail() {
   const location = useLocation()
@@ -52,6 +53,7 @@ export default function detail() {
   const [comments, setComments] = useState<any>([])
   const [sendCtoC, setSendCtoC] = useState(false)
   const [nowComInfo, setNowComInfo] = useState<any>({})
+  const [nowcommentid, setNowcommentid] = useState('')
   // const [articleid, setArticleid] = useState('')
   // const [pages, setPages] = useState(1)
   // const [isBottom, setIsBottom] = useState(false)
@@ -178,8 +180,23 @@ export default function detail() {
   }
 
   // 评论点赞
-  const replyLike = (id: string) => {
-    commentsLikes(id)
+  const replyLike = (item: any) => {
+    commentsLikes(item._id)
+    setNowcommentid(item._id)
+
+    findLike(comments)
+  }
+
+  const findLike = (arrs: any) => {
+    arrs.forEach((item: any) => {
+      if (item._id === nowcommentid) {
+        item.likes++
+        console.log(item, 'item')
+      }
+      if (item.replies) {
+        findLike(item.replies)
+      }
+    })
   }
 
   // 加载更多
@@ -227,6 +244,28 @@ export default function detail() {
       })
     })
 
+  const timeCalc = (e: string) => {
+    const sendT = new Date(e).getTime()
+    const nowT = new Date().getTime()
+    const sxt = Math.floor((nowT - sendT) / 1000)
+
+    if (sxt < 1) {
+      return '刚刚'
+    } else if (sxt < 60) {
+      return `${sxt}秒前`
+    } else if (sxt < 3600) {
+      return `${Math.floor(sxt / 60)}分钟前`
+    } else if (sxt < 3600 * 24) {
+      return `${Math.floor(sxt / 3600)}小时前`
+    } else if (sxt < 3600 * 24 * 31) {
+      return `${Math.floor(sxt / (3600 * 24))}天前`
+    } else if (sxt < 3600 * 24 * 365) {
+      return `${Math.floor(sxt / (3600 * 24 * 31))}月前`
+    } else {
+      return `${Math.floor(sxt / (3600 * 24 * 365))}年前`
+    }
+  }
+
   const titleRender = (nodeData: replies) => {
     return (
       <div className="commentlist">
@@ -239,25 +278,20 @@ export default function detail() {
         </div>
         <div className="dninfo">
           <div className="dninfo-left">
-            1小时前
+            {timeCalc(nodeData.createdAt)}
             <span className="ml-5">●</span>
             <span className="ml-5 hf" onClick={() => replySend(nodeData)}>
               回复
             </span>
           </div>
           <div className="dninfo-right ml-10">
-            <HeartOutlined onClick={() => replyLike(nodeData._id)} className="ml-5" />
+            <HeartOutlined onClick={() => replyLike(nodeData)} className="ml-5" />
             <span className="ml-3">{nodeData.likes}</span>
             {/* <span className="ml-10" onClick={() => getCommentMore(nodeData)}>
               加载更多
             </span> */}
           </div>
         </div>
-        {/* <HeartOutlined onClick={() => replyLike(nodeData._id)} className="ml-5" />
-        <span className="ml-3">{nodeData.likes}</span>
-        <span className="ml-5" onClick={() => replySend(nodeData)}>
-          回复
-        </span> */}
       </div>
     )
   }
@@ -312,8 +346,6 @@ export default function detail() {
 
             {artInfo.likes.length}
           </span>
-
-          {/* <HeartOutlined onClick={likeArt} /> <i>{artInfo.likes.length}</i> */}
         </div>
         <div className="comment">
           <div className="comment-tit">发表评论</div>
@@ -344,6 +376,7 @@ export default function detail() {
 
           <div ref={scrollRef} className="comment-tree">
             <Tree
+              selectable={false}
               showLine
               switcherIcon={<DownOutlined />}
               titleRender={titleRender}
@@ -352,17 +385,6 @@ export default function detail() {
               treeData={comments}
             />
           </div>
-
-          {/* {comments.map((item: any) => (
-            <div className="comment-item" key={item._id}>
-              <p>
-                {item.user.name}： {item.text}
-                <span onClick={() => replySend(item)}>回复</span>
-                <span onClick={() => replyLike(item._id)}>点赞{item.likes}</span>
-                <span onClick={() => getInserComments(item._id)}>获取内层评论</span>
-              </p>
-            </div>
-          ))} */}
         </div>
       </div>
     </ArticleDetailBox>
