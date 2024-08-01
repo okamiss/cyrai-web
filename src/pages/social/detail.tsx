@@ -189,9 +189,9 @@ export default function detail() {
     return (
       <div className="commentlist">
         <img src={nodeData.user.avatar} alt="" />
-        <span className="ml-5">{nodeData.text}</span>
+        <span className="ml-5 text">{nodeData.text}</span>
         <HeartOutlined onClick={() => replyLike(nodeData._id)} className="ml-5" />
-        {nodeData.likes}
+        <span className='ml-3'>{nodeData.likes}</span>
         <span className="ml-5" onClick={() => replySend(nodeData)}>
           回复
         </span>

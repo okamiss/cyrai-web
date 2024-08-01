@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <Fragment>
       {colors.map((e) => (
-        <Section style={{background:e}}></Section>
+        <Section key={e} style={{background:e}}></Section>
       ))}
     </Fragment>
   )

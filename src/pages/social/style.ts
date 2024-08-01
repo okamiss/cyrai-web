@@ -157,6 +157,9 @@ export const ArticleDetailBox = styled.div`
   .commentlist {
     display: flex;
     align-items: center;
+    .text{
+      max-width: 50%;
+    }
     img {
       width: 32px;
       height: 32px;
