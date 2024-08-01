@@ -65,6 +65,7 @@ interface replies {
   likes: number
   createdAt: string
   __v: number
+  page?:number
 }
 
 interface repliesUser {

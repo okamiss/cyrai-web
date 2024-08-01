@@ -52,9 +52,9 @@ export default function detail() {
   const [comments, setComments] = useState<any>([])
   const [sendCtoC, setSendCtoC] = useState(false)
   const [nowComInfo, setNowComInfo] = useState<any>({})
-  const [articleid, setArticleid] = useState('')
-  const [pages, setPages] = useState(1)
-  const [isBottom, setIsBottom] = useState(false)
+  // const [articleid, setArticleid] = useState('')
+  // const [pages, setPages] = useState(1)
+  // const [isBottom, setIsBottom] = useState(false)
 
   const getUserId = useSelector((state: RootState) => state.user.userId)
   const scrollRef = useRef(null)
@@ -63,38 +63,40 @@ export default function detail() {
     getArt('')
   }, [])
 
-  useEffect(() => {
-    const scrollElement: any = scrollRef.current
-    scrollElement.addEventListener('scroll', handleScroll)
-    return () => {
-      scrollElement.removeEventListener('scroll', handleScroll)
-    }
-  }, [pages, articleid, isBottom])
+  // useEffect(() => {
+  //   const scrollElement: any = scrollRef.current
+  //   scrollElement.addEventListener('scroll', handleScroll)
+  //   return () => {
+  //     scrollElement.removeEventListener('scroll', handleScroll)
+  //   }
+  // }, [pages, articleid, isBottom])
 
-  const handleScroll = () => {
-    const { scrollTop, scrollHeight, clientHeight }: any = scrollRef.current
-    if (scrollTop + clientHeight >= scrollHeight) {
-      // console.log('评论区滚动到底部')
-      // console.log(isBottom, 'isBottom')
-      if (isBottom) return
-      setPages((value) => value + 1)
-      getCommentList(articleid, pages + 1)
-    }
-  }
+  // const handleScroll = () => {
+  //   const { scrollTop, scrollHeight, clientHeight }: any = scrollRef.current
+  //   if (scrollTop + clientHeight >= scrollHeight) {
+  //     // console.log('评论区滚动到底部')
+  //     // console.log(isBottom, 'isBottom')
+  //     if (isBottom) return
+  //     setPages((value) => value + 1)
+  //     getCommentList(articleid, pages + 1)
+  //   }
+  // }
 
   // 加载评论列表
-  const getCommentList = (id: string, page: number) => {
-    getComments({ id, page }).then((res) => {
+  const getCommentList = () => {
+    getComments({ id: artId }).then((res) => {
       res.data.forEach((item: replies) => {
+        // item.page = 1
         delete item.replies
       })
 
-      if (res.data.length < 10) {
-        setIsBottom(true)
-      } else {
-        setIsBottom(false)
-      }
-      setComments((value: any) => [...value, ...res.data])
+      setComments(res.data)
+      // if (res.data.length < 10) {
+      //   setIsBottom(true)
+      // } else {
+      //   setIsBottom(false)
+      // }
+      // setComments((value: any) => [...value, ...res.data])
     })
   }
 
@@ -109,8 +111,8 @@ export default function detail() {
       setIslike(isLike)
       setArtInfo(res.data)
       if (e === 'like') return
-      setArticleid(res.data._id)
-      getCommentList(res.data._id, 1)
+      // setArticleid(res.data._id)
+      getCommentList()
     })
   }
 
@@ -180,6 +182,11 @@ export default function detail() {
     commentsLikes(id)
   }
 
+  // 加载更多
+  // const getCommentMore = (item: any) => {
+  //   console.log(item)
+  // }
+
   // 获取内层评论
   // const getInserComments = (id: string) => {
   //   getcommentsReplies(id)
@@ -190,6 +197,7 @@ export default function detail() {
       if (node._id === _id) {
         return {
           ...node,
+          isLeaf: !replies.length,
           replies
         }
       }
@@ -211,6 +219,7 @@ export default function detail() {
       console.log(_id, replies)
       getcommentsReplies(_id).then((res) => {
         res.data.forEach((item: replies) => {
+          // item.page = 1
           delete item.replies
         })
         setComments((origin: any) => updateTreeData(origin, _id, res.data))
@@ -239,6 +248,9 @@ export default function detail() {
           <div className="dninfo-right ml-10">
             <HeartOutlined onClick={() => replyLike(nodeData._id)} className="ml-5" />
             <span className="ml-3">{nodeData.likes}</span>
+            {/* <span className="ml-10" onClick={() => getCommentMore(nodeData)}>
+              加载更多
+            </span> */}
           </div>
         </div>
         {/* <HeartOutlined onClick={() => replyLike(nodeData._id)} className="ml-5" />
@@ -282,7 +294,7 @@ export default function detail() {
       <div className="art-right ml-10 ">
         <div className="author">
           <img src={artInfo.author.avatar} alt={artInfo.author.name} />
-          <span className='ml-5'>{artInfo.author.name}</span>
+          <span className="ml-5">{artInfo.author.name}</span>
         </div>
         <div className="title">{artInfo.title}</div>
         <div className="content mt-20">{artInfo.content}</div>
@@ -319,19 +331,16 @@ export default function detail() {
             />
           ) : null}
 
-         
-
           <TextArea
             value={value}
             onChange={(e) => setValue(e.target.value)}
             placeholder="Controlled autosize"
             autoSize={{ minRows: 5, maxRows: 10 }}
           />
-          
-          <Button type="primary" onClick={sendComment} className='comment-sendpl'>
+
+          <Button type="primary" onClick={sendComment} className="comment-sendpl">
             发表评论
           </Button>
-          
 
           <div ref={scrollRef} className="comment-tree">
             <Tree

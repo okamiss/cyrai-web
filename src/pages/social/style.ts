@@ -181,7 +181,7 @@ export const ArticleDetailBox = styled.div`
     }
     .dninfo {
       display: flex;
-      /* justify-content: space-between; */
+      justify-content: space-between;
       &-left {
         .hf {
           cursor: pointer;
