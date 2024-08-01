@@ -144,26 +144,52 @@ export const ArticleDetailBox = styled.div`
     margin-top: 30px;
     border-top: 1px solid #ccc;
     &-tit {
-      margin-top: 10px;
+      margin: 10px 0;
     }
-    &-item {
+    &-sendpl{
+      margin: 10px 0;
+    }
+    &-tree{
+      height: 350px;
+      overflow-y: scroll;
+    }
+    /* &-item {
       margin-top: 10px;
       p {
         line-height: 30px;
       }
-    }
+    } */
   }
 
   .commentlist {
-    display: flex;
-    align-items: center;
-    .text{
-      max-width: 50%;
+    /* display: flex;
+    align-items: center; */
+    cursor: default;
+    width: 100%;
+    .upinfo {
+      display: flex;
+      &-left {
+        width: 32px;
+        height: 32px;
+      }
+      &-right {
+        flex: 1;
+        p {
+          line-height: 16px;
+        }
+      }
     }
-    img {
-      width: 32px;
-      height: 32px;
+    .dninfo {
+      display: flex;
+      /* justify-content: space-between; */
+      &-left {
+        .hf {
+          cursor: pointer;
+        }
+      }
+      &-right {
+        cursor: pointer;
+      }
     }
-   
   }
 `

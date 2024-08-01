@@ -25,8 +25,8 @@ export const likeArticle = (data: string): Promise<sendArticleRes> =>
   request.post(`${API.GET_ARTICLE}/${data}/like`)
 
 // 获取外层评论列表
-export const getComments = (params: string): Promise<any> =>
-  request.get(`${API.GET_ARTICLE}/${params}/comments`)
+export const getComments = (params: any): Promise<any> =>
+  request.get(`${API.GET_ARTICLE}/${params.id}/comments`,{ params })
 
 // 获取内层评论列表
 export const getcommentsReplies = (params: string): Promise<any> =>
