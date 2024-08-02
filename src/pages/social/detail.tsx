@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   articleDetail,
   commentArticle,
@@ -11,7 +11,7 @@ import {
 import { useLocation } from 'react-router-dom'
 import { ArticleDetailBox } from './style'
 import { HeartOutlined, DownOutlined } from '@ant-design/icons'
-import { Alert, Button, Input, Space, Tree, message } from 'antd'
+import { Alert, Button, Input, Tree, message } from 'antd'
 import { getFileTypeByMime, timeCalc } from '@/utils/tool'
 const { TextArea } = Input
 
@@ -27,9 +27,6 @@ import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
 import SvgIcon from '@/components/SvgIcon'
 import { useSelector } from 'react-redux'
-import dayjs from 'dayjs'
-
-import cloneDeep from 'lodash/cloneDeep'
 
 export default function detail() {
   const location = useLocation()
@@ -232,8 +229,6 @@ export default function detail() {
   // const getInserComments = (id: string) => {
   //   getcommentsReplies(id)
   // }
-
-
 
   const updateTreeData = (list: replies[], _id: React.Key, replies: replies[]): replies[] =>
     list.map((node) => {
