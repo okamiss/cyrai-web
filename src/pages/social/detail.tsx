@@ -12,7 +12,7 @@ import { useLocation } from 'react-router-dom'
 import { ArticleDetailBox } from './style'
 import { HeartOutlined, DownOutlined } from '@ant-design/icons'
 import { Alert, Button, Input, Space, Tree, message } from 'antd'
-import { getFileTypeByMime } from '@/utils/tool'
+import { getFileTypeByMime, timeCalc } from '@/utils/tool'
 const { TextArea } = Input
 
 // import Swiper core and required modules
@@ -28,6 +28,8 @@ import 'swiper/css/scrollbar'
 import SvgIcon from '@/components/SvgIcon'
 import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
+
+import cloneDeep from 'lodash/cloneDeep'
 
 export default function detail() {
   const location = useLocation()
@@ -53,13 +55,12 @@ export default function detail() {
   const [comments, setComments] = useState<any>([])
   const [sendCtoC, setSendCtoC] = useState(false)
   const [nowComInfo, setNowComInfo] = useState<any>({})
-  const [nowcommentid, setNowcommentid] = useState('')
   // const [articleid, setArticleid] = useState('')
   // const [pages, setPages] = useState(1)
   // const [isBottom, setIsBottom] = useState(false)
 
   const getUserId = useSelector((state: RootState) => state.user.userId)
-  const scrollRef = useRef(null)
+  // const scrollRef = useRef(null)
 
   useEffect(() => {
     getArt('')
@@ -141,9 +142,33 @@ export default function detail() {
           content: res.message
         })
         setValue('')
-        onLoadData({ _id: nowComInfo._id })
         setSendCtoC(false)
         setNowComInfo({})
+        // onLoadData({ _id: nowComInfo._id })
+        // 静态添加数据
+        const updateTree = (data: any) =>
+          data.map((item: any) => {
+            if (item._id === nowComInfo._id) {
+              if (item.replies) {
+                return {
+                  ...item,
+                  isLeaf: false,
+                  replies: [...item.replies, res.data]
+                }
+              } else {
+                return {
+                  ...item,
+                  isLeaf: false
+                }
+              }
+            }
+            if (item.replies) {
+              return { ...item, replies: updateTree(item.replies) }
+            }
+            return item
+          })
+
+        setComments(updateTree(comments))
       })
     } else {
       // 外层评论
@@ -180,34 +205,35 @@ export default function detail() {
   }
 
   // 评论点赞
-  const replyLike = (item: any) => {
-    commentsLikes(item._id)
-    setNowcommentid(item._id)
-
-    findLike(comments)
-  }
-
-  const findLike = (arrs: any) => {
-    arrs.forEach((item: any) => {
-      if (item._id === nowcommentid) {
-        item.likes++
-        console.log(item, 'item')
+  const replyLike = (rows: any) => {
+    commentsLikes(rows._id).then(() => {
+      // 静态添加数据
+      const updateTree = (data: any) => {
+        return data.map((item: any) => {
+          if (item._id === rows._id) {
+            return { ...item, likes: item.likes + 1 }
+          }
+          if (item.replies) {
+            return { ...item, replies: updateTree(item.replies) }
+          }
+          return item
+        })
       }
-      if (item.replies) {
-        findLike(item.replies)
-      }
+      setComments(updateTree(comments))
     })
   }
 
   // 加载更多
   // const getCommentMore = (item: any) => {
-  //   console.log(item)
+
   // }
 
   // 获取内层评论
   // const getInserComments = (id: string) => {
   //   getcommentsReplies(id)
   // }
+
+
 
   const updateTreeData = (list: replies[], _id: React.Key, replies: replies[]): replies[] =>
     list.map((node) => {
@@ -233,7 +259,6 @@ export default function detail() {
         resolve()
         return
       }
-      console.log(_id, replies)
       getcommentsReplies(_id).then((res) => {
         res.data.forEach((item: replies) => {
           // item.page = 1
@@ -243,28 +268,6 @@ export default function detail() {
         resolve()
       })
     })
-
-  const timeCalc = (e: string) => {
-    const sendT = new Date(e).getTime()
-    const nowT = new Date().getTime()
-    const sxt = Math.floor((nowT - sendT) / 1000)
-
-    if (sxt < 1) {
-      return '刚刚'
-    } else if (sxt < 60) {
-      return `${sxt}秒前`
-    } else if (sxt < 3600) {
-      return `${Math.floor(sxt / 60)}分钟前`
-    } else if (sxt < 3600 * 24) {
-      return `${Math.floor(sxt / 3600)}小时前`
-    } else if (sxt < 3600 * 24 * 31) {
-      return `${Math.floor(sxt / (3600 * 24))}天前`
-    } else if (sxt < 3600 * 24 * 365) {
-      return `${Math.floor(sxt / (3600 * 24 * 31))}月前`
-    } else {
-      return `${Math.floor(sxt / (3600 * 24 * 365))}年前`
-    }
-  }
 
   const titleRender = (nodeData: replies) => {
     return (
@@ -284,8 +287,8 @@ export default function detail() {
               回复
             </span>
           </div>
-          <div className="dninfo-right ml-10">
-            <HeartOutlined onClick={() => replyLike(nodeData)} className="ml-5" />
+          <div className="dninfo-right ml-10" onClick={() => replyLike(nodeData)}>
+            <HeartOutlined className="ml-5" />
             <span className="ml-3">{nodeData.likes}</span>
             {/* <span className="ml-10" onClick={() => getCommentMore(nodeData)}>
               加载更多
@@ -374,17 +377,16 @@ export default function detail() {
             发表评论
           </Button>
 
-          <div ref={scrollRef} className="comment-tree">
-            <Tree
-              selectable={false}
-              showLine
-              switcherIcon={<DownOutlined />}
-              titleRender={titleRender}
-              fieldNames={{ title: 'text', key: '_id', children: 'replies' }}
-              loadData={onLoadData}
-              treeData={comments}
-            />
-          </div>
+          <Tree
+            height={500}
+            selectable={false}
+            showLine
+            switcherIcon={<DownOutlined />}
+            titleRender={titleRender}
+            fieldNames={{ title: 'text', key: '_id', children: 'replies' }}
+            loadData={onLoadData}
+            treeData={comments}
+          />
         </div>
       </div>
     </ArticleDetailBox>
