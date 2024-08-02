@@ -1,2 +1,2 @@
-# CyrAI-web
+# cyr-web
 

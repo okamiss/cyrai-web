@@ -143,6 +143,10 @@ export default function Home() {
     }
   }
 
+  const openInNewTab = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
+
   return (
     <ContentBox className="m-1200-auto">
       {contextHolder}
@@ -157,17 +161,19 @@ export default function Home() {
                   <span>{item.author.name}</span>
                 </div>
                 <div className="article-item-title over-nobreak">
-                  <span onClick={() => navigateTo(`/social/detail/${item._id}`)}>{item.title}</span>
+                  <span onClick={() => openInNewTab(`/social/detail/${item._id}`)}>
+                    {item.title}
+                  </span>
                 </div>
                 <div
                   className="article-item-content over-nobreak-2"
-                  onClick={() => navigateTo(`/social/detail/${item._id}`)}
+                  onClick={() => openInNewTab(`/social/detail/${item._id}`)}
                 >
                   {item.content}
                 </div>
                 <div
                   className="article-item-fileds mt-5"
-                  onClick={() => navigateTo(`/social/detail/${item._id}`)}
+                  onClick={() => openInNewTab(`/social/detail/${item._id}`)}
                 >
                   {item.fields
                     .slice(0, 3)
@@ -202,10 +208,11 @@ export default function Home() {
             )
           })}
           <Pagination
+            className="mt-20"
             total={total}
             showSizeChanger
             showQuickJumper
-            showTotal={(total) => `Total ${total} items`}
+            showTotal={(total) => `共 ${total} 条帖子`}
             onChange={onChange}
           />
         </div>

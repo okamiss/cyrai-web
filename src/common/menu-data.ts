@@ -5,8 +5,12 @@ export const headerLinks = [
     link: '/home'
   },
   {
-    title: '社交',
+    title: '圈子',
     link: '/social'
+  },
+  {
+    title: '我们的产品',
+    link: '/product'
   },
   {
     title: '大屏幕',

@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { TinyColor } from '@ctrl/tinycolor'
 import { Button, ConfigProvider, Dropdown, Form, Input, Modal, message } from 'antd'
-import { headerLinks } from '@/common/local-data'
+import { headerLinks } from '@/common/menu-data'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 

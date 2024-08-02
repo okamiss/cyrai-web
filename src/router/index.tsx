@@ -8,6 +8,7 @@ import Screen from '@/pages/screen'
 const Social = lazy(() => import('@/pages/social'))
 const ArticleDetail = lazy(() => import('@/pages/social/detail'))
 const Userinfo = lazy(() => import('@/pages/userinfo'))
+const Product = lazy(() => import('@/pages/product'))
 
 const withLoadingComponent = (comp: JSX.Element) => (
   <React.Suspense fallback={<h1>Loading...</h1>}>{comp}</React.Suspense>
@@ -38,6 +39,10 @@ const routes = [
         path: '/userinfo',
         element: withLoadingComponent(<Userinfo />)
       },
+      {
+        path: '/product',
+        element: withLoadingComponent(<Product />)
+      }
     ]
   },
   {
